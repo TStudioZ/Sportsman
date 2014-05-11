@@ -15,6 +15,10 @@ public class Sport {
         this.id = id;
     }
 
+    public long getCalories(float distanceMeters) {
+        return 0l;
+    }
+
     /**
      * Returns new instance of Sport based on parameter.
      * @param sportId the id of the sport

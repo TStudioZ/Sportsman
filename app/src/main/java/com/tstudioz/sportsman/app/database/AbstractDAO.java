@@ -14,16 +14,17 @@ public class AbstractDAO {
     public AbstractDAO(Context context, boolean writable) {
         this.dbHelper = new DatabaseHelper(context);
         this.writable = writable;
+        open();
     }
 
-    public void open() {
+    private void open() {
         if (writable)
             db = dbHelper.getWritableDatabase();
         else
             db = dbHelper.getReadableDatabase();
     }
 
-    public void close() {
+    private void close() {
         db.close();
     }
 }

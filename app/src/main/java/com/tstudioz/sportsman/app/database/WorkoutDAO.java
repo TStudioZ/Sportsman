@@ -38,13 +38,14 @@ public class WorkoutDAO extends AbstractDAO {
 
         if (cursor.getCount() == 0) return null;
 
-        double distance = cursor.getDouble(cursor.getColumnIndex(WorkoutContract.WorkoutEntry.COLUMN_NAME_DISTANCE));
-        long cals = cursor.getLong(cursor.getColumnIndex(WorkoutContract.WorkoutEntry.COLUMN_NAME_CALORIES));
+        long duration = cursor.getLong(cursor.getColumnIndex(WorkoutContract.WorkoutEntry.COLUMN_NAME_DURATION));
+        float distance = cursor.getFloat(cursor.getColumnIndex(WorkoutContract.WorkoutEntry.COLUMN_NAME_DISTANCE));
         int mood = cursor.getInt(cursor.getColumnIndex(WorkoutContract.WorkoutEntry.COLUMN_NAME_MOOD_ID));
         int weather = cursor.getInt(cursor.getColumnIndex(WorkoutContract.WorkoutEntry.COLUMN_NAME_WEATHER_ID));
         Sport sport = Sport.newInstance(cursor.getInt(cursor.getColumnIndex(WorkoutContract.WorkoutEntry.COLUMN_NAME_SPORT_ID)));
+        String datetime = cursor.getString(cursor.getColumnIndex(WorkoutContract.WorkoutEntry.COLUMN_NAME_DATETIME));
 
-        return new WorkoutWithWaypoints(id, distance, cals, mood, weather, sport, waypoints);
+        return new WorkoutWithWaypoints(datetime, duration, distance, mood, weather, sport, waypoints);
     }
 
     /**
@@ -55,10 +56,11 @@ public class WorkoutDAO extends AbstractDAO {
     public long add(Workout workout) {
         ContentValues contentValues = new ContentValues();
         contentValues.put(WorkoutContract.WorkoutEntry.COLUMN_NAME_DISTANCE, workout.getDistance());
-        contentValues.put(WorkoutContract.WorkoutEntry.COLUMN_NAME_CALORIES, workout.getCals());
+        contentValues.put(WorkoutContract.WorkoutEntry.COLUMN_NAME_DURATION, workout.getDuration());
+        contentValues.put(WorkoutContract.WorkoutEntry.COLUMN_NAME_SPORT_ID, workout.getSport().getId());
         contentValues.put(WorkoutContract.WorkoutEntry.COLUMN_NAME_MOOD_ID, workout.getMood());
         contentValues.put(WorkoutContract.WorkoutEntry.COLUMN_NAME_WEATHER_ID, workout.getWeather());
-        contentValues.put(WorkoutContract.WorkoutEntry.COLUMN_NAME_SPORT_ID, workout.getSport().getId());
+        contentValues.put(WorkoutContract.WorkoutEntry.COLUMN_NAME_DATETIME, workout.getDatetime());
         return db.insert(WorkoutContract.WorkoutEntry.TABLE_NAME, null, contentValues);
     }
 
@@ -68,8 +70,8 @@ public class WorkoutDAO extends AbstractDAO {
      * @return id of the new workout
      */
     public long add(WorkoutWithWaypoints workout) {
-        long id = add(workout);
-        new WaypointDAO(context).add(workout.getWaypoints());
+        long id = add((Workout) workout);
+        new WaypointDAO(context).add(id, workout.getWaypoints());
         return id;
     }
 
@@ -77,11 +79,27 @@ public class WorkoutDAO extends AbstractDAO {
     /**
      * Deletes a workout with the same id as the one\'s in parameter
      * and all waypoints with it.
-     * @param workout workout to be deleted
+     * @param workoutID workout id to be deleted
      */
-    public void delete(Workout workout) {
-        String[] selectionArgs = { String.valueOf(workout.getId()) };
-        db.delete(WorkoutContract.WorkoutEntry.TABLE_NAME, SELECTION_WORKOUT_ID, selectionArgs);
+    public int delete(long workoutID) {
+        String[] selectionArgs = { String.valueOf(workoutID) };
+        int w = new WaypointDAO(context).delete(workoutID);
+        return db.delete(WorkoutContract.WorkoutEntry.TABLE_NAME, SELECTION_WORKOUT_ID, selectionArgs);
+    }
+
+    private static final String SELECTION_WORKOUTS_LAST_WEEK = " BETWEEN datetime('now', '-6 days') AND datetime('now', 'localtime')";
+    public Cursor getLastWeek() {
+        return db.rawQuery("SELECT * FROM " + WorkoutContract.WorkoutEntry.TABLE_NAME + " WHERE " +
+                        WorkoutContract.WorkoutEntry.COLUMN_NAME_DATETIME + SELECTION_WORKOUTS_LAST_WEEK,
+                null);
+    }
+
+    private static final String SELECTION_WORKOUTS_THIS_MONTH = " BETWEEN datetime('now', 'start of month') AND datetime('now', 'localtime')";
+    public Cursor getThisMonth() {
+        return db.rawQuery("SELECT * FROM " + WorkoutContract.WorkoutEntry.TABLE_NAME + " WHERE " +
+                        WorkoutContract.WorkoutEntry.COLUMN_NAME_DATETIME + SELECTION_WORKOUTS_THIS_MONTH +
+                        " ORDER BY " + WorkoutContract.WorkoutEntry.COLUMN_NAME_DATETIME + " DESC",
+                null);
     }
 
     public Cursor getAll() {

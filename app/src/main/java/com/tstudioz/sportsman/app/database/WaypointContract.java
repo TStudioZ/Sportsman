@@ -10,6 +10,7 @@ public final class WaypointContract {
         public static final String TABLE_NAME = "waypoint";
         public static final String COLUMN_NAME_WORKOUT_ID = "workout_id";
         public static final String COLUMN_NAME_DATETIME = "datetime";
+        public static final String COLUMN_NAME_DURATION = "duration";
         public static final String COLUMN_NAME_SPEED = "speed";
         public static final String COLUMN_NAME_DISTANCE = "distance";
         public static final String COLUMN_NAME_LATITUDE = "latitude";

@@ -3,6 +3,7 @@
     package="com.tstudioz.sportsman.app" >
 
     <application
+        android:name="com.tstudioz.sportsman.app.SportsmanApp"
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
@@ -27,6 +28,25 @@
         <meta-data
             android:name="com.google.android.maps.v2.API_KEY"
             android:value="@string/google_maps_key" />
+
+        <service
+            android:name="com.tstudioz.sportsman.app.WorkoutService"
+            android:enabled="true"
+            android:exported="false" >
+        </service>
+
+        <activity
+            android:name="com.tstudioz.sportsman.app.WorkoutStartActivity"
+            android:label="@string/title_activity_workout_start" >
+        </activity>
+        <activity
+            android:name="com.tstudioz.sportsman.app.WorkoutActivity"
+            android:label="@string/title_activity_workout" >
+        </activity>
+        <activity
+            android:name="com.tstudioz.sportsman.app.WorkoutFinishActivity"
+            android:label="@string/title_activity_workout_finish" >
+        </activity>
     </application>
 
     <uses-permission android:name="android.permission.INTERNET" />

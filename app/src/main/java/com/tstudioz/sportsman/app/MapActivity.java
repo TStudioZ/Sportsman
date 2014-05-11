@@ -1,23 +1,38 @@
 package com.tstudioz.sportsman.app;
 
-import android.support.v4.app.FragmentActivity;
+import android.graphics.Color;
 import android.os.Bundle;
+import android.support.v4.app.FragmentActivity;
 
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
-import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.PolylineOptions;
+import com.tstudioz.sportsman.app.database.WaypointDAO;
+import com.tstudioz.sportsman.app.training.Waypoint;
+
+import java.util.Iterator;
+import java.util.List;
 
 public class MapActivity extends FragmentActivity {
 
-    private GoogleMap mMap; // Might be null if Google Play services APK is not available.
+    private GoogleMap map;
+    private List<Waypoint> waypoints;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_map);
         setUpMapIfNeeded();
+        if (getIntent().getExtras() != null) {
+            long workoutID = getIntent().getExtras().getLong("workout_id");
+            waypoints = new WaypointDAO(this).getAllWaypointsByWorkoutID(workoutID);
+        }
+        showWaypoints();
     }
 
     @Override
@@ -26,40 +41,60 @@ public class MapActivity extends FragmentActivity {
         setUpMapIfNeeded();
     }
 
-    /**
-     * Sets up the map if it is possible to do so (i.e., the Google Play services APK is correctly
-     * installed) and the map has not already been instantiated.. This will ensure that we only ever
-     * call {@link #setUpMap()} once when {@link #mMap} is not null.
-     * <p>
-     * If it isn't installed {@link SupportMapFragment} (and
-     * {@link com.google.android.gms.maps.MapView MapView}) will show a prompt for the user to
-     * install/update the Google Play services APK on their device.
-     * <p>
-     * A user can return to this FragmentActivity after following the prompt and correctly
-     * installing/updating/enabling the Google Play services. Since the FragmentActivity may not
-     * have been completely destroyed during this process (it is likely that it would only be
-     * stopped or paused), {@link #onCreate(Bundle)} may not be called again so we should call this
-     * method in {@link #onResume()} to guarantee that it will be called.
-     */
     private void setUpMapIfNeeded() {
-        // Do a null check to confirm that we have not already instantiated the map.
-        if (mMap == null) {
-            // Try to obtain the map from the SupportMapFragment.
-            mMap = ((MapFragment) getFragmentManager().findFragmentById(R.id.map)).getMap();
-            // Check if we were successful in obtaining the map.
-            if (mMap != null) {
-                setUpMap();
-            }
+        if (map == null) {
+            map = ((MapFragment) getFragmentManager().findFragmentById(R.id.map)).getMap();
         }
     }
 
-    /**
-     * This is where we can add markers or lines, add listeners or move the camera. In this case, we
-     * just add a marker near Africa.
-     * <p>
-     * This should only be called once and when we are sure that {@link #mMap} is not null.
-     */
-    private void setUpMap() {
-        mMap.addMarker(new MarkerOptions().position(new LatLng(0, 0)).title("Marker"));
+    private void showWaypoints() {
+        PolylineOptions polylineOptions = new PolylineOptions();
+        Iterator<Waypoint> iterator = waypoints.iterator();
+        Waypoint currentWaypoint;
+        if (waypoints.size() >= 1) {
+            currentWaypoint = iterator.next();
+            polylineOptions.add(currentWaypoint.getLatLng());
+            map.addMarker(new MarkerOptions()
+                    .position(currentWaypoint.getLatLng())
+                    .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED))
+                    .flat(true));
+        }
+        else
+            return;
+
+        if (waypoints.size() >= 2) {
+            map.addMarker(new MarkerOptions()
+                    .position(waypoints.get(waypoints.size() - 1).getLatLng())
+                    .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN))
+                    .flat(true));
+        }
+
+        double mostWest = currentWaypoint.getLatLng().longitude,
+                mostNorth = currentWaypoint.getLatLng().latitude,
+                mostEast = currentWaypoint.getLatLng().longitude,
+                mostSouth = currentWaypoint.getLatLng().latitude;
+        while (iterator.hasNext()) {
+            currentWaypoint = iterator.next();
+            polylineOptions.add(currentWaypoint.getLatLng()).width(4.0f).color(Color.CYAN);
+
+            if (currentWaypoint.getLatLng().longitude < mostWest)
+                mostWest = currentWaypoint.getLatLng().longitude;
+            else if (currentWaypoint.getLatLng().longitude > mostEast)
+                mostEast = currentWaypoint.getLatLng().longitude;
+            if (currentWaypoint.getLatLng().latitude > mostNorth)
+                mostNorth = currentWaypoint.getLatLng().latitude;
+            else if (currentWaypoint.getLatLng().latitude < mostSouth)
+                mostSouth = currentWaypoint.getLatLng().latitude;
+        }
+
+        map.addPolyline(polylineOptions);
+
+        LatLngBounds bounds = new LatLngBounds(
+                new LatLng(mostSouth, mostWest),
+                new LatLng(mostNorth, mostEast));
+
+        map.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds,
+                getResources().getDisplayMetrics().widthPixels,
+                getResources().getDisplayMetrics().heightPixels, 100));
     }
 }

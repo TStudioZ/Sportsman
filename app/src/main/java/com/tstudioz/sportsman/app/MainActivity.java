@@ -123,6 +123,9 @@ public class MainActivity extends Activity implements ActionBar.TabListener {
         @Override
         public Fragment getItem(int position) {
             switch(position) {
+                case 0: {
+                    return new HomeFragment();
+                }
                 case 1: {
                     return new DiaryFragment();
                 }

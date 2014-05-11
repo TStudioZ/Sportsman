@@ -1,14 +1,21 @@
 package com.tstudioz.sportsman.app.training;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Created by Tomáš Zahálka on 10. 5. 2014.
  */
 public class WorkoutWithWaypoints extends Workout {
-    public WorkoutWithWaypoints(long id, double distance, long cals, int mood,
+
+    public WorkoutWithWaypoints(String datetime, Sport sport) {
+        super(datetime, 0, 0.0f, 0, 0, sport);
+        waypoints = new ArrayList<>();
+    }
+
+    public WorkoutWithWaypoints(String duration, long time, float distance, int mood,
                                 int weather, Sport sport, List<Waypoint> waypoints) {
-        super(id, distance, cals, mood, weather, sport);
+        super(duration, time, distance, mood, weather, sport);
         this.waypoints = waypoints;
     }
 

@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import com.tstudioz.sportsman.app.R;
 import com.tstudioz.sportsman.app.database.WorkoutContract;
+import com.tstudioz.sportsman.app.time.TimeHelper;
 
 /**
  * Created by Tomáš Zahálka on 10. 5. 2014.
@@ -37,8 +38,9 @@ public class WorkoutCursorAdapter extends CursorAdapter {
         TextView datetime = (TextView) view.findViewById(R.id.datetime);
         TextView distance = (TextView) view.findViewById(R.id.distance);
         TextView duration = (TextView) view.findViewById(R.id.duration);
-        distance.setText(Double.toString( cursor.getDouble(cursor.getColumnIndex(WorkoutContract.WorkoutEntry.COLUMN_NAME_DISTANCE) )));
+        distance.setText( Double.toString( cursor.getDouble(cursor.getColumnIndex(WorkoutContract.WorkoutEntry.COLUMN_NAME_DISTANCE ))) );
+        datetime.setText( cursor.getString(cursor.getColumnIndex(WorkoutContract.WorkoutEntry.COLUMN_NAME_DATETIME)) );
+        duration.setText( TimeHelper.getTime(cursor.getLong(cursor.getColumnIndex(WorkoutContract.WorkoutEntry.COLUMN_NAME_DURATION))) );
     }
-
 
 }

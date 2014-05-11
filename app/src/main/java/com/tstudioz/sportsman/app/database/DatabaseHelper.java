@@ -10,14 +10,13 @@ import android.database.sqlite.SQLiteOpenHelper;
  */
 public class DatabaseHelper extends SQLiteOpenHelper {
 
-    public static final int DATABASE_VERSION = 2;
+    public static final int DATABASE_VERSION = 8;
     public static final String DATABASE_NAME = "Sportsman.db";
 
-    private static final String CREATE_TABLE_TRAININGS = "CREATE TABLE " + WorkoutContract.WorkoutEntry.TABLE_NAME
+    private static final String CREATE_TABLE_WORKOUTS = "CREATE TABLE " + WorkoutContract.WorkoutEntry.TABLE_NAME
             + " (" + WorkoutContract.WorkoutEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, "
             + WorkoutContract.WorkoutEntry.COLUMN_NAME_DISTANCE + " TEXT, "
-            + WorkoutContract.WorkoutEntry.COLUMN_NAME_DURATION + " TEXT, "
-            + WorkoutContract.WorkoutEntry.COLUMN_NAME_CALORIES + " INTEGER, "
+            + WorkoutContract.WorkoutEntry.COLUMN_NAME_DURATION + " INTEGER, "
             + WorkoutContract.WorkoutEntry.COLUMN_NAME_SPORT_ID + " INTEGER, "
             + WorkoutContract.WorkoutEntry.COLUMN_NAME_MOOD_ID + " INTEGER, "
             + WorkoutContract.WorkoutEntry.COLUMN_NAME_WEATHER_ID + " INTEGER, "
@@ -27,6 +26,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             + " (" + WaypointContract.WaypointEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, "
             + WaypointContract.WaypointEntry.COLUMN_NAME_WORKOUT_ID + " INTEGER, "
             + WaypointContract.WaypointEntry.COLUMN_NAME_DATETIME + " TIMESTAMP, "
+            + WorkoutContract.WorkoutEntry.COLUMN_NAME_DURATION + " INTEGER, "
             + WaypointContract.WaypointEntry.COLUMN_NAME_SPEED + " TEXT, "
             + WaypointContract.WaypointEntry.COLUMN_NAME_DISTANCE + " TEXT, "
             + WaypointContract.WaypointEntry.COLUMN_NAME_LATITUDE + " TEXT, "
@@ -38,7 +38,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        db.execSQL(CREATE_TABLE_TRAININGS);
+        db.execSQL(CREATE_TABLE_WORKOUTS);
         db.execSQL(CREATE_TABLE_WAYPOINTS);
     }
 
@@ -47,6 +47,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS " + WorkoutContract.WorkoutEntry.TABLE_NAME);
         db.execSQL("DROP TABLE IF EXISTS " + WaypointContract.WaypointEntry.TABLE_NAME);
         onCreate(db);
+    }
+
+    @Override
+    public void onDowngrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+        onUpgrade(db, oldVersion, newVersion);
     }
 
     public static Cursor getAll(SQLiteDatabase db, String tableName) {

@@ -7,10 +7,6 @@ import com.google.android.gms.maps.model.LatLng;
  */
 public class Waypoint {
 
-    public long getWorkoutID() {
-        return workoutID;
-    }
-
     public double getSpeed() {
         return speed;
     }
@@ -23,19 +19,24 @@ public class Waypoint {
         return latLng;
     }
 
-    public long getId() {
-        return id;
+    private final float speed;
+    private final float distance;
+    private final LatLng latLng;
+    private final long duration;
+
+    public String getDatetime() {
+        return datetime;
     }
 
-    private long id;
-    private long workoutID;
-    private double speed;
-    private double distance;
-    private LatLng latLng;
+    public long getDuration() {
+        return duration;
+    }
 
-    public Waypoint(long id, long workoutID, double speed, double distance, LatLng latLng) {
-        this.id = id;
-        this.workoutID = workoutID;
+    private final String datetime;
+
+    public Waypoint(String datetime, long duration, float speed, float distance, LatLng latLng) {
+        this.datetime = datetime;
+        this.duration = duration;
         this.speed = speed;
         this.distance = distance;
         this.latLng = latLng;
