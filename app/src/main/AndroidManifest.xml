@@ -36,16 +36,24 @@
         </service>
 
         <activity
-            android:name="com.tstudioz.sportsman.app.WorkoutStartActivity"
-            android:label="@string/title_activity_workout_start" >
-        </activity>
-        <activity
             android:name="com.tstudioz.sportsman.app.WorkoutActivity"
             android:label="@string/title_activity_workout" >
         </activity>
         <activity
             android:name="com.tstudioz.sportsman.app.WorkoutFinishActivity"
             android:label="@string/title_activity_workout_finish" >
+        </activity>
+        <activity
+            android:name="com.tstudioz.sportsman.app.WorkoutDetailActivity"
+            android:label="@string/title_activity_workout_detail" >
+        </activity>
+        <activity
+            android:name="com.tstudioz.sportsman.app.WorkoutEditActivity"
+            android:label="@string/title_activity_workout_edit" >
+        </activity>
+        <activity
+            android:name="com.tstudioz.sportsman.app.StatsActivity"
+            android:label="@string/title_activity_stats" >
         </activity>
     </application>
 

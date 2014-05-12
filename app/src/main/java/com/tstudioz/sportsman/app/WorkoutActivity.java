@@ -17,6 +17,8 @@ import android.widget.TextView;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesClient;
 import com.google.android.gms.common.GooglePlayServicesUtil;
+import com.tstudioz.sportsman.app.time.TimeHelper;
+import com.tstudioz.sportsman.app.training.WorkoutCursorAdapter;
 
 
 public class WorkoutActivity extends Activity implements
@@ -29,13 +31,33 @@ public class WorkoutActivity extends Activity implements
     private Button btnResumeWorkout;
     private Button btnStopWorkout;
     private TextView textViewDistance;
-    private TextView textViewTime;
+    private TextView textViewDuration;
     private TextView textViewSpeed;
+
+    int mode;
+    private static final int START_MODE = 0;
+    private static final int PAUSE_MODE = 1;
+    private static final int STOP_MODE = 2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_workout);
+
+        mode = 0;
+        if (savedInstanceState != null) {
+            mode = savedInstanceState.getInt("mode", 0);
+        }
+
+        btnPauseWorkout = (Button) findViewById(R.id.btn_pause_workout);
+        btnStartWorkout = (Button) findViewById(R.id.btn_start_workout);
+        btnResumeWorkout = (Button) findViewById(R.id.btn_resume_workout);
+        btnStopWorkout = (Button) findViewById(R.id.btn_stop_workout);
+
+        if (mode == PAUSE_MODE)
+            showPause();
+        else if (mode == STOP_MODE)
+            showStop();
 
         ((SportsmanApp) getApplicationContext()).setWorkoutActivity(this);
         serviceIntent = new Intent(this, WorkoutService.class);
@@ -48,40 +70,31 @@ public class WorkoutActivity extends Activity implements
         workoutBroadcastReceiver = new WorkoutBroadcastReceiver();
         LocalBroadcastManager.getInstance(this).registerReceiver(workoutBroadcastReceiver, intentFilter);
 
-        btnStartWorkout = (Button) findViewById(R.id.btn_start_workout);
         btnStartWorkout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 ((SportsmanApp)getApplicationContext()).getWorkoutService().resumeWorkout();
-                btnStartWorkout.setVisibility(View.GONE);
-                btnPauseWorkout.setVisibility(View.VISIBLE);
+                showPause();
             }
         });
 
-        btnPauseWorkout = (Button) findViewById(R.id.btn_pause_workout);
         btnPauseWorkout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 ((SportsmanApp)getApplicationContext()).getWorkoutService().pauseWorkout();
-                findViewById(R.id.start_pause).setVisibility(View.GONE);
-                findViewById(R.id.resume_stop).setVisibility(View.VISIBLE);
-                textViewSpeed.setText("0.0 m/s");
+                showStop();
+                textViewSpeed.setText( String.format("%.2f", 0.0f) + WorkoutCursorAdapter.SPEED_UNITS );
             }
         });
 
-        btnResumeWorkout = (Button) findViewById(R.id.btn_resume_workout);
         btnResumeWorkout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 ((SportsmanApp)getApplicationContext()).getWorkoutService().resumeWorkout();
-                findViewById(R.id.resume_stop).setVisibility(View.GONE);
-                findViewById(R.id.start_pause).setVisibility(View.VISIBLE);
-                btnStartWorkout.setVisibility(View.GONE);
-                btnPauseWorkout.setVisibility(View.VISIBLE);
+                showPause();
             }
         });
 
-        btnStopWorkout = (Button) findViewById(R.id.btn_stop_workout);
         btnStopWorkout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -94,14 +107,39 @@ public class WorkoutActivity extends Activity implements
         });
 
         textViewDistance = (TextView) findViewById(R.id.distance);
-        textViewTime = (TextView) findViewById(R.id.time);
+        textViewDuration = (TextView) findViewById(R.id.time);
         textViewSpeed = (TextView) findViewById(R.id.speed);
+
+        textViewDistance.setText( String.format("%.2f", 0.0f) + WorkoutCursorAdapter.DISTANCE_UNITS );
+        textViewDuration.setText( TimeHelper.getTime(0) );
+        textViewSpeed.setText( String.format("%.2f", 0.0f) + WorkoutCursorAdapter.SPEED_UNITS );
     }
 
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
-        stopService(serviceIntent);
+        // do nothing
+    }
+
+    private void showPause() {
+        mode = PAUSE_MODE;
+        findViewById(R.id.resume_stop).setVisibility(View.GONE);
+        findViewById(R.id.start_pause).setVisibility(View.VISIBLE);
+        btnStartWorkout.setVisibility(View.GONE);
+        btnPauseWorkout.setVisibility(View.VISIBLE);
+    }
+
+    private void showStop() {
+        mode = STOP_MODE;
+        btnStartWorkout.setVisibility(View.GONE);
+        btnPauseWorkout.setVisibility(View.VISIBLE);
+        findViewById(R.id.resume_stop).setVisibility(View.VISIBLE);
+        findViewById(R.id.start_pause).setVisibility(View.GONE);
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putInt("mode", mode);
     }
 
     /**
@@ -110,8 +148,8 @@ public class WorkoutActivity extends Activity implements
      * @param speed current speed
      */
     private void updateHUD(float distance, float speed) {
-        textViewDistance.setText(String.valueOf(distance) + " m");
-        textViewSpeed.setText(String.valueOf(speed) + " m/s");
+        textViewDistance.setText(String.format("%.2f", distance * 0.001f) + WorkoutCursorAdapter.DISTANCE_UNITS);
+        textViewSpeed.setText(String.format("%.2f", speed) + WorkoutCursorAdapter.SPEED_UNITS);
     }
 
     /**
@@ -119,7 +157,7 @@ public class WorkoutActivity extends Activity implements
      * @param time String version of time
      */
     private void updateHUD(String time) {
-        textViewTime.setText(time);
+        textViewDuration.setText(time);
     }
 
     private WorkoutBroadcastReceiver workoutBroadcastReceiver;

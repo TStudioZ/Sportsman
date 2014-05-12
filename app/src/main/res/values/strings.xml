@@ -13,11 +13,36 @@
     <string name="resume_workout">Resume</string>
     <string name="stop_workout">Stop</string>
     <string name="delete_workout">Delete</string>
-    <string name="title_activity_workout_start">WorkoutStartActivity</string>
-    <string name="title_activity_workout">WorkoutActivity</string>
-    <string name="title_activity_workout_finish">WorkoutFinishActivity</string>
+    <string name="title_activity_workout">Workout</string>
+    <string name="title_activity_workout_finish">How was your mood</string>
     <string name="yes">Yes</string>
     <string name="no">No</string>
     <string name="are_you_sure">Are you sure?</string>
+    <string name="sport_inline">Inline</string>
+    <string name="sport_bike">Bike</string>
+    <string name="sport_running">Running</string>
+    <string name="title_activity_workout_detail">Workout detail</string>
+    <string name="show_map">Show on map</string>
+    <string name="edit">Edit</string>
+    <string name="workout">Workout</string>
+    <string name="distance_detail">Distance:</string>
+    <string name="duration_detail">Duration:</string>
+    <string name="burned_detail">Burned:</string>
+    <string name="avg_speed_detail">Average speed:</string>
+    <string name="start_time_detail">Start:</string>
+    <string name="start_date_detail">Date:</string>
+    <string name="sport_detail">Sport:</string>
+    <string name="avg_speed_graph">Average speed</string>
+    <string name="title_activity_workout_edit">WorkoutEditActivity</string>
+    <string name="save">Save</string>
+    <string name="graph">Graph stats</string>
+    <string name="title_activity_stats">Stats</string>
+
+    <string-array name="graphs">
+        <item>Distance</item>
+        <item>Time</item>
+        <item>Avg. speed</item>
+        <item>Calories</item>
+    </string-array>
 
 </resources>

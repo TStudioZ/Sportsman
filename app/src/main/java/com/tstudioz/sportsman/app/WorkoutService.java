@@ -51,7 +51,7 @@ public class WorkoutService extends Service implements
     public int onStartCommand(Intent intent, int flags, int startId) {
         super.onStartCommand(intent, flags, startId);
         if (sport == null) {
-            sport = Sport.newInstance( intent.getIntExtra("sport_id", 0) );
+            sport = Sport.getSport( intent.getIntExtra("sport_id", 0) );
         }
         return Service.START_NOT_STICKY;
     }
@@ -108,10 +108,11 @@ public class WorkoutService extends Service implements
      */
     public void stopWorkout() {
         workout.setDuration(totalTimeMilisecs + (System.currentTimeMillis() - lastTimeMilisecs));
-        workout.addWaypoint(new Waypoint(TimeHelper.getCurrentTimestamp(),
-                totalTimeMilisecs,
-                speed, workout.getDistance(),
-                new LatLng(lastWaypoint.getLatitude(), lastWaypoint.getLongitude())));
+        if (lastWaypoint != null)
+            workout.addWaypoint(new Waypoint(TimeHelper.getCurrentTimestamp(),
+                    totalTimeMilisecs,
+                    speed, workout.getDistance(),
+                    new LatLng(lastWaypoint.getLatitude(), lastWaypoint.getLongitude())));
         ((SportsmanApp) getApplicationContext()).setActiveWorkout(workout);
     }
 

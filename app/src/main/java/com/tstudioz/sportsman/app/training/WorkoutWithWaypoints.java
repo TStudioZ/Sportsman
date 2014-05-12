@@ -9,13 +9,13 @@ import java.util.List;
 public class WorkoutWithWaypoints extends Workout {
 
     public WorkoutWithWaypoints(String datetime, Sport sport) {
-        super(datetime, 0, 0.0f, 0, 0, sport);
+        super(datetime, 0, 0.0f, 0, sport);
         waypoints = new ArrayList<>();
     }
 
     public WorkoutWithWaypoints(String duration, long time, float distance, int mood,
-                                int weather, Sport sport, List<Waypoint> waypoints) {
-        super(duration, time, distance, mood, weather, sport);
+                                Sport sport, List<Waypoint> waypoints) {
+        super(duration, time, distance, mood, sport);
         this.waypoints = waypoints;
     }
 

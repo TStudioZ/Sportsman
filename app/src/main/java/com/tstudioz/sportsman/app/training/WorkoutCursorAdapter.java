@@ -12,10 +12,16 @@ import com.tstudioz.sportsman.app.R;
 import com.tstudioz.sportsman.app.database.WorkoutContract;
 import com.tstudioz.sportsman.app.time.TimeHelper;
 
+import java.text.ParseException;
+
 /**
  * Created by Tomáš Zahálka on 10. 5. 2014.
  */
 public class WorkoutCursorAdapter extends CursorAdapter {
+
+    public static final String DISTANCE_UNITS = " km";
+    public static final String CALORIES_UNITS = " kcal";
+    public static final String SPEED_UNITS = " km/h";
 
     /**
      * Creates an cursor adapter, which reads workouts from database
@@ -35,12 +41,26 @@ public class WorkoutCursorAdapter extends CursorAdapter {
 
     @Override
     public void bindView(View view, Context context, Cursor cursor) {
-        TextView datetime = (TextView) view.findViewById(R.id.datetime);
-        TextView distance = (TextView) view.findViewById(R.id.distance);
-        TextView duration = (TextView) view.findViewById(R.id.duration);
-        distance.setText( Double.toString( cursor.getDouble(cursor.getColumnIndex(WorkoutContract.WorkoutEntry.COLUMN_NAME_DISTANCE ))) );
-        datetime.setText( cursor.getString(cursor.getColumnIndex(WorkoutContract.WorkoutEntry.COLUMN_NAME_DATETIME)) );
-        duration.setText( TimeHelper.getTime(cursor.getLong(cursor.getColumnIndex(WorkoutContract.WorkoutEntry.COLUMN_NAME_DURATION))) );
+        TextView datetimeView = (TextView) view.findViewById(R.id.datetime);
+        TextView distanceView = (TextView) view.findViewById(R.id.distance);
+        TextView durationView = (TextView) view.findViewById(R.id.duration);
+        TextView sportNameView = (TextView) view.findViewById(R.id.sport_name);
+        TextView caloriesView = (TextView) view.findViewById(R.id.calories);
+
+        float distance = cursor.getFloat(cursor.getColumnIndex(WorkoutContract.WorkoutEntry.COLUMN_NAME_DISTANCE ));
+        long duration = cursor.getLong(cursor.getColumnIndex(WorkoutContract.WorkoutEntry.COLUMN_NAME_DURATION));
+        String datetime = cursor.getString(cursor.getColumnIndex(WorkoutContract.WorkoutEntry.COLUMN_NAME_DATETIME));
+        Sport sport = Sport.getSport( cursor.getInt(cursor.getColumnIndex(WorkoutContract.WorkoutEntry.COLUMN_NAME_SPORT_ID)) );
+
+        distanceView.setText(String.format("%.2f", distance * 0.001f) + DISTANCE_UNITS);
+        durationView.setText( TimeHelper.getTime(duration) );
+        try {
+            datetimeView.setText( TimeHelper.convertToLocale(context, datetime) );
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        sportNameView.setText(sport.getNameID());
+        caloriesView.setText( String.valueOf(sport.getCalories(distance)) + CALORIES_UNITS );
     }
 
 }

@@ -5,12 +5,11 @@ package com.tstudioz.sportsman.app.training;
  */
 public class Workout {
 
-    public Workout(String datetime, long duration, float distance, int mood, int weather, Sport sport) {
+    public Workout(String datetime, long duration, float distance, int mood, Sport sport) {
         this.datetime = datetime;
         this.duration = duration;
         this.distance = distance;
         this.mood = mood;
-        this.weather = weather;
         this.sport = sport;
     }
 
@@ -22,10 +21,6 @@ public class Workout {
         return mood;
     }
 
-    public int getWeather() {
-        return weather;
-    }
-
     public Sport getSport() {
         return sport;
     }
@@ -35,7 +30,7 @@ public class Workout {
         distance += d;
     }
 
-    public long getCals() {
+    public long getCalories() {
         return sport.getCalories(distance);
     }
 
@@ -53,8 +48,12 @@ public class Workout {
 
     private String datetime;
     private long duration;
+
+    public void setMood(int mood) {
+        this.mood = mood;
+    }
+
     private int mood;
-    private int weather;
     private Sport sport;
 
     public float getAvgSpeed() {

@@ -1,8 +1,12 @@
 package com.tstudioz.sportsman.app.time;
 
+import android.content.Context;
+
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.GregorianCalendar;
 
 /**
  * Created by Tomáš Zahálka on 11. 5. 2014.
@@ -16,6 +20,18 @@ public class TimeHelper {
     public static String getCurrentTimestamp() {
         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         return dateFormat.format(new Date());
+    }
+
+    public static String convertToLocale(Context context, String timestamp) throws ParseException {
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Date date = simpleDateFormat.parse(timestamp);
+        DateFormat dateFormat = android.text.format.DateFormat.getDateFormat(context);
+        return dateFormat.format(date);
+    }
+
+    public static String createTimestamp(int year, int month, int day, int hour, int minute, int second) {
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        return simpleDateFormat.format(new GregorianCalendar(year, month, day, hour, minute, second).getTime());
     }
 
     /**
