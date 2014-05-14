@@ -1,4 +1,4 @@
-package com.tstudioz.sportsman.app;
+package com.tstudioz.sportsman.app.activities;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -12,10 +12,11 @@ import com.jjoe64.graphview.GraphView;
 import com.jjoe64.graphview.GraphView.GraphViewData;
 import com.jjoe64.graphview.GraphViewSeries;
 import com.jjoe64.graphview.LineGraphView;
+import com.tstudioz.sportsman.app.R;
+import com.tstudioz.sportsman.app.adapters.WorkoutCursorAdapter;
 import com.tstudioz.sportsman.app.database.WorkoutDAO;
 import com.tstudioz.sportsman.app.time.TimeHelper;
 import com.tstudioz.sportsman.app.training.Waypoint;
-import com.tstudioz.sportsman.app.training.WorkoutCursorAdapter;
 import com.tstudioz.sportsman.app.training.WorkoutWithWaypoints;
 
 import java.text.ParseException;
@@ -103,6 +104,10 @@ public class WorkoutDetailActivity extends Activity implements DialogHelper.Comm
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         if (id == R.id.action_map) {
+            if (workout.getWaypoints() == null || workout.getWaypoints().size() == 0) {
+                new DialogHelper(this, null).showInfoDialog(getString(R.string.no_map_data));
+                return true;
+            }
             Intent intent = new Intent(this, MapActivity.class);
             intent.putExtra("workout_id", workoutID);
             startActivity(intent);

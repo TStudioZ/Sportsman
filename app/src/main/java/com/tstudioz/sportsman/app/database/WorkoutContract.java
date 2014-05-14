@@ -10,11 +10,9 @@ public final class WorkoutContract {
         public static final String TABLE_NAME = "workout";
         public static final String COLUMN_NAME_DISTANCE = "distance";
         public static final String COLUMN_NAME_DURATION = "duration";
-        public static final String COLUMN_NAME_CALORIES = "cals";
         public static final String COLUMN_NAME_SPORT_ID = "sport_id";
         public static final String COLUMN_NAME_MOOD_ID = "mood_id";
-        public static final String COLUMN_NAME_WEATHER_ID = "weather_id";
-        public static final String COLUMN_NAME_DATETIME = "datetime";
+        public static final String COLUMN_NAME_DATETIME = "date_and_time";
 
     }
 }

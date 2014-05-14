@@ -1,4 +1,4 @@
-package com.tstudioz.sportsman.app;
+package com.tstudioz.sportsman.app.activities;
 
 import android.app.Activity;
 import android.app.Dialog;
@@ -17,13 +17,19 @@ import android.widget.TextView;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesClient;
 import com.google.android.gms.common.GooglePlayServicesUtil;
+import com.tstudioz.sportsman.app.R;
+import com.tstudioz.sportsman.app.SportsmanApp;
+import com.tstudioz.sportsman.app.adapters.WorkoutCursorAdapter;
+import com.tstudioz.sportsman.app.services.WorkoutService;
 import com.tstudioz.sportsman.app.time.TimeHelper;
-import com.tstudioz.sportsman.app.training.WorkoutCursorAdapter;
+import com.tstudioz.sportsman.app.training.Sport;
 
 
 public class WorkoutActivity extends Activity implements
-        GooglePlayServicesClient.OnConnectionFailedListener {
+        GooglePlayServicesClient.OnConnectionFailedListener,
+        DialogHelper.CommandListener {
 
+    /* result of Google Play Services connection */
     private ConnectionResult connectionResult;
     private Intent serviceIntent;
     private Button btnStartWorkout;
@@ -33,8 +39,10 @@ public class WorkoutActivity extends Activity implements
     private TextView textViewDistance;
     private TextView textViewDuration;
     private TextView textViewSpeed;
+    private TextView textViewSport;
 
-    int mode;
+    /* mode of the workout - not started, started, paused */
+    private int mode;
     private static final int START_MODE = 0;
     private static final int PAUSE_MODE = 1;
     private static final int STOP_MODE = 2;
@@ -59,9 +67,10 @@ public class WorkoutActivity extends Activity implements
         else if (mode == STOP_MODE)
             showStop();
 
+        int sportID = getIntent().getExtras().getInt("sport_id");
         ((SportsmanApp) getApplicationContext()).setWorkoutActivity(this);
         serviceIntent = new Intent(this, WorkoutService.class);
-        serviceIntent.putExtra("sport_id", getIntent().getExtras().getInt("sport_id"));
+        serviceIntent.putExtra("sport_id", sportID);
         startService(serviceIntent);
 
         IntentFilter intentFilter = new IntentFilter();
@@ -107,17 +116,33 @@ public class WorkoutActivity extends Activity implements
         });
 
         textViewDistance = (TextView) findViewById(R.id.distance);
-        textViewDuration = (TextView) findViewById(R.id.time);
+        textViewDuration = (TextView) findViewById(R.id.duration);
         textViewSpeed = (TextView) findViewById(R.id.speed);
+        textViewSport = (TextView) findViewById(R.id.text_view_sport);
 
         textViewDistance.setText( String.format("%.2f", 0.0f) + WorkoutCursorAdapter.DISTANCE_UNITS );
         textViewDuration.setText( TimeHelper.getTime(0) );
         textViewSpeed.setText( String.format("%.2f", 0.0f) + WorkoutCursorAdapter.SPEED_UNITS );
+        textViewSport.setText( Sport.getSport(sportID).getNameID() );
+    }
+
+    private final int CANCEL_WORKOUT_COMMAND = 1;
+    @Override
+    public void onBackPressed() {
+        if (mode == START_MODE)
+            super.onBackPressed();
+        else
+            new DialogHelper(this, this)
+                    .showYesNoDialog(getString(R.string.cancel_workout),
+                            CANCEL_WORKOUT_COMMAND);
     }
 
     @Override
-    public void onBackPressed() {
-        // do nothing
+    public void onCommandSelected(int command) {
+        if (command == CANCEL_WORKOUT_COMMAND) {
+            stopService(serviceIntent);
+            super.onBackPressed();
+        }
     }
 
     private void showPause() {
@@ -161,6 +186,7 @@ public class WorkoutActivity extends Activity implements
     }
 
     private WorkoutBroadcastReceiver workoutBroadcastReceiver;
+
     private class WorkoutBroadcastReceiver extends BroadcastReceiver {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -215,15 +241,15 @@ public class WorkoutActivity extends Activity implements
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == CONNECTION_FAILURE_RESOLUTION_REQUEST) {
-                if (resultCode == Activity.RESULT_OK) {
-                    try {
-                        connectionResult.startResolutionForResult(
-                                this,
-                                CONNECTION_FAILURE_RESOLUTION_REQUEST);
-                    } catch (IntentSender.SendIntentException e) {
-                        e.printStackTrace();
-                    }
+            if (resultCode == Activity.RESULT_OK) {
+                try {
+                    connectionResult.startResolutionForResult(
+                            this,
+                            CONNECTION_FAILURE_RESOLUTION_REQUEST);
+                } catch (IntentSender.SendIntentException e) {
+                    e.printStackTrace();
                 }
+            }
         }
     }
 

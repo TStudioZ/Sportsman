@@ -1,4 +1,4 @@
-package com.tstudioz.sportsman.app;
+package com.tstudioz.sportsman.app.activities;
 
 import android.app.AlertDialog;
 import android.content.Context;
@@ -18,7 +18,7 @@ public class DialogHelper {
     private final CommandListener commandListener;
     private int command;
 
-    static interface CommandListener {
+    public static interface CommandListener {
         public void onCommandSelected(int command);
     }
 
@@ -26,9 +26,14 @@ public class DialogHelper {
         this.command = command;
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         builder.setMessage(message)
-                .setPositiveButton(R.string.yes, dialogClickListener)
-                .setNegativeButton(R.string.no, dialogClickListener)
+                .setPositiveButton(android.R.string.yes, dialogClickListener)
+                .setNegativeButton(android.R.string.no, dialogClickListener)
                 .show();
+    }
+
+    public void showInfoDialog(String message) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        builder.setMessage(message).setNeutralButton(android.R.string.ok, null).show();
     }
 
     private DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
@@ -36,7 +41,8 @@ public class DialogHelper {
         public void onClick(DialogInterface dialog, int which) {
             switch (which){
                 case DialogInterface.BUTTON_POSITIVE:
-                    commandListener.onCommandSelected(command);
+                    if (commandListener != null)
+                        commandListener.onCommandSelected(command);
                     break;
                 case DialogInterface.BUTTON_NEGATIVE:
                     break;

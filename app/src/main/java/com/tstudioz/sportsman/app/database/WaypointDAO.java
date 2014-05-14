@@ -35,7 +35,6 @@ public class WaypointDAO extends AbstractDAO {
         float speed, distance;
         double lat, lng;
         String datetime;
-        LatLng latLng;
         waypoints = new ArrayList<>(cursor.getCount());
         cursor.moveToFirst();
         while (!cursor.isAfterLast()) {

@@ -1,6 +1,6 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context="com.tstudioz.sportsman.app.WorkoutDetailActivity" >
+    tools:context="com.tstudioz.sportsman.app.activities.WorkoutDetailActivity" >
     <item android:id="@+id/action_map"
         android:icon="@android:drawable/ic_dialog_map"
         android:title="@string/show_map"

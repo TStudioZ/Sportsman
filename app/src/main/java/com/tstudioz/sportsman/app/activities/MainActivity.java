@@ -1,4 +1,4 @@
-package com.tstudioz.sportsman.app;
+package com.tstudioz.sportsman.app.activities;
 
 import android.app.ActionBar;
 import android.app.Activity;
@@ -12,6 +12,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+
+import com.tstudioz.sportsman.app.R;
+import com.tstudioz.sportsman.app.fragments.DiaryFragment;
+import com.tstudioz.sportsman.app.fragments.HomeFragment;
+import com.tstudioz.sportsman.app.fragments.StatsFragment;
 
 import java.util.Locale;
 

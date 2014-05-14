@@ -35,6 +35,9 @@ public class Sport {
         this.calories = calories;
     }
 
+    /**
+     * Gets the string by id.
+     */
     @Override
     public String toString() {
         return context.getResources().getString(nameID);

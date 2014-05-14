@@ -1,4 +1,4 @@
-package com.tstudioz.sportsman.app;
+package com.tstudioz.sportsman.app.services;
 
 import android.app.Service;
 import android.content.Intent;
@@ -12,6 +12,7 @@ import com.google.android.gms.location.LocationClient;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.maps.model.LatLng;
+import com.tstudioz.sportsman.app.SportsmanApp;
 import com.tstudioz.sportsman.app.time.TimeHelper;
 import com.tstudioz.sportsman.app.training.Sport;
 import com.tstudioz.sportsman.app.training.Waypoint;
@@ -26,6 +27,7 @@ public class WorkoutService extends Service implements
     private LocationClient locationClient;
     private LocationRequest locationRequest;
 
+    /* interval fro receiving location updates */
     private static final int UPDATE_INTERVAL = 2000;
 
     public static final String INTENT_DISTANCE_UPDATE = "distance_update";
@@ -34,7 +36,6 @@ public class WorkoutService extends Service implements
     @Override
     public void onCreate() {
         super.onCreate();
-
         ((SportsmanApp) getApplicationContext()).setWorkoutService(this);
 
         locationRequest = locationRequest.create();
@@ -59,13 +60,13 @@ public class WorkoutService extends Service implements
     @Override
     public void onDestroy() {
         super.onDestroy();
-
         if (locationClient.isConnected()) {
             locationClient.removeLocationUpdates(this);
+            locationClient.disconnect();
         }
-        locationClient.disconnect();
     }
 
+    /* not used */
     @Override
     public IBinder onBind(Intent intent) {
         return null;
@@ -85,6 +86,7 @@ public class WorkoutService extends Service implements
         paused = true;
         timer.cancel();
         timer = null;
+        lastWaypoint = lastLocation = null;
     }
 
     /**
@@ -138,6 +140,7 @@ public class WorkoutService extends Service implements
         }
     }
 
+    /* counts total time */
     private void updateTime() {
         lastIntervalMilisecs = System.currentTimeMillis() - lastTimeMilisecs;
         lastTimeMilisecs = System.currentTimeMillis();
@@ -154,21 +157,20 @@ public class WorkoutService extends Service implements
             if (lastLocation != null) {
                 float distance[] = new float[1];
                 Location.distanceBetween(lastLocation.getLatitude(), lastLocation.getLongitude(),
-                        location.getLatitude(), location.getLongitude(), distance);
-
-                speed = distance[0] / (lastIntervalMilisecs * 0.001f);
+                        location.getLatitude(), location.getLongitude(), distance); // determine distance between last and new location
+                speed = distance[0] / (lastIntervalMilisecs * 0.001f); // determine speed based on distance and elapsed time
 
                 workout.addDistance(distance[0]);
                 Intent intent = new Intent(INTENT_DISTANCE_UPDATE);
                 intent.putExtra("distance", workout.getDistance());
                 intent.putExtra("speed", speed);
-                LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
+                LocalBroadcastManager.getInstance(this).sendBroadcast(intent); // send distance update broadcast
 
                 if (lastWaypoint != null)
                     Location.distanceBetween(lastWaypoint.getLatitude(), lastWaypoint.getLongitude(),
                             location.getLatitude(), location.getLongitude(), distance);
 
-                if (distance[0] >= MIN_WAYPOINT_DISTANCE || lastWaypoint == null) {
+                if (distance[0] >= MIN_WAYPOINT_DISTANCE || lastWaypoint == null) { // add new waypoint to the workout if we passed the distance
                     workout.addWaypoint(new Waypoint(TimeHelper.getCurrentTimestamp(),
                             totalTimeMilisecs,
                             speed, workout.getDistance(),
@@ -177,7 +179,7 @@ public class WorkoutService extends Service implements
                 }
             }
         }
-        lastLocation = location;
+        lastLocation = location; // store updated location for the next update
     }
 
     /* min distance to add waypoint */
@@ -185,8 +187,9 @@ public class WorkoutService extends Service implements
     /* previous updated location */
     private Location lastLocation = null;
     /* location of the last recorded waypoint */
-    private Location lastWaypoint;
+    private Location lastWaypoint = null;
     @Override
+
     public void onLocationChanged(Location location) {
         updateWorkout(location);
     }

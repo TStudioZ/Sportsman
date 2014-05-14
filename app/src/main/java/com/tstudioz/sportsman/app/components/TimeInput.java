@@ -1,4 +1,4 @@
-package com.tstudioz.sportsman.app;
+package com.tstudioz.sportsman.app.components;
 
 import android.content.Context;
 import android.content.res.TypedArray;
@@ -8,6 +8,8 @@ import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+
+import com.tstudioz.sportsman.app.R;
 
 /**
  * Created by Tomáš Zahálka on 12. 5. 2014.
@@ -52,8 +54,8 @@ public class TimeInput extends LinearLayout {
         requestLayout();
     }
 
-    public void setTime(long miliseconds) {
-        long seconds = miliseconds / 1000;
+    public void setTime(long milliseconds) {
+        long seconds = milliseconds / 1000;
         long minutes = seconds / 60;
         long hours = minutes / 60;
         seconds %= 60;
@@ -71,7 +73,7 @@ public class TimeInput extends LinearLayout {
     private EditText editTextMinutes;
     private EditText editTextSeconds;
 
-    public long getMiliseconds() {
+    public long getMilliseconds() {
         return getHours() * 3600000l + getMinutes() * 60000l + getSeconds() * 1000l;
     }
 
@@ -143,9 +145,10 @@ public class TimeInput extends LinearLayout {
         }
 
         @Override
-        public CharSequence filter(CharSequence charSequence, int start, int end, Spanned spanned, int dstart, int dend) {
+        public CharSequence filter(CharSequence source, int start, int end, Spanned dest, int dstart, int dend) {
             try {
-                int number = Integer.parseInt(spanned.toString() + charSequence.toString());
+                int number = Integer.parseInt( dest.toString().substring(0, dstart)
+                        + source.toString().substring(start, end) + dest.toString().substring(dend) );
                 if (number >= min && number <= max)
                     return null;
             } catch (NumberFormatException e) {

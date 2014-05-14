@@ -10,12 +10,17 @@ public class WorkoutWithWaypoints extends Workout {
 
     public WorkoutWithWaypoints(String datetime, Sport sport) {
         super(datetime, 0, 0.0f, 0, sport);
-        waypoints = new ArrayList<>();
+        this.waypoints = new ArrayList<>();
     }
 
     public WorkoutWithWaypoints(String duration, long time, float distance, int mood,
                                 Sport sport, List<Waypoint> waypoints) {
         super(duration, time, distance, mood, sport);
+        this.waypoints = waypoints;
+    }
+
+    public WorkoutWithWaypoints(Workout workout, List<Waypoint> waypoints) {
+        super(workout.datetime, workout.duration, workout.distance, workout.mood, workout.sport);
         this.waypoints = waypoints;
     }
 

@@ -1,3 +1,5 @@
-1 sport_inline 30
+1 sport_inline 36
 2 sport_bike 22
 3 sport_running 40
+4 sport_skiing 28
+5 sport_ice_skating 32

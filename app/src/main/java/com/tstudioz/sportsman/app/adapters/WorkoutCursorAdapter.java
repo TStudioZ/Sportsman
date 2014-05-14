@@ -1,4 +1,4 @@
-package com.tstudioz.sportsman.app.training;
+package com.tstudioz.sportsman.app.adapters;
 
 import android.content.Context;
 import android.database.Cursor;
@@ -11,6 +11,7 @@ import android.widget.TextView;
 import com.tstudioz.sportsman.app.R;
 import com.tstudioz.sportsman.app.database.WorkoutContract;
 import com.tstudioz.sportsman.app.time.TimeHelper;
+import com.tstudioz.sportsman.app.training.Sport;
 
 import java.text.ParseException;
 
@@ -39,6 +40,9 @@ public class WorkoutCursorAdapter extends CursorAdapter {
         return layoutInflater.inflate(R.layout.workout_row, viewGroup, false);
     }
 
+    /**
+     * Populates the row view with cursor values.
+     */
     @Override
     public void bindView(View view, Context context, Cursor cursor) {
         TextView datetimeView = (TextView) view.findViewById(R.id.datetime);

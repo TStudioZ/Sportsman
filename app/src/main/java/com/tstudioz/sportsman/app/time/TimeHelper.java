@@ -5,6 +5,7 @@ import android.content.Context;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 
@@ -22,22 +23,57 @@ public class TimeHelper {
         return dateFormat.format(new Date());
     }
 
-    public static String convertToLocale(Context context, String timestamp) throws ParseException {
+    /**
+     * Converts given datetime to locale datetime.
+     * @param context context
+     * @param datetime datetime in text format
+     * @return
+     * @throws ParseException exception when parsing datetime
+     */
+    public static String convertToLocale(Context context, String datetime) throws ParseException {
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        Date date = simpleDateFormat.parse(timestamp);
+        Date date = simpleDateFormat.parse(datetime);
         DateFormat dateFormat = android.text.format.DateFormat.getDateFormat(context);
         return dateFormat.format(date);
     }
 
+    /**
+     * Converts integer values of date to String.
+     * @return String datetime
+     */
     public static String createTimestamp(int year, int month, int day, int hour, int minute, int second) {
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         return simpleDateFormat.format(new GregorianCalendar(year, month, day, hour, minute, second).getTime());
     }
 
     /**
+     * Returns an instance of Calendar parsed from String datetime.
+     * @param datetime datetime in text format
+     * @return instance of Calendar
+     * @throws ParseException
+     */
+    public static Calendar getDate(String datetime) throws ParseException {
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Date date = simpleDateFormat.parse(datetime);
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(date);
+        return calendar;
+    }
+
+    /**
+     * Compares years, months and days of given dates.
+     * @return true if equal, false otherwise
+     */
+    public static boolean equalDays(Calendar date1, Calendar date2) {
+        return date1.get(Calendar.YEAR) == date2.get(Calendar.YEAR)
+                && date1.get(Calendar.MONTH) == date2.get(Calendar.MONTH)
+                && date1.get(Calendar.DAY_OF_MONTH) == date2.get(Calendar.DAY_OF_MONTH);
+    }
+
+    /**
      * Converts miliseconds to user friendly time format.
      * @param miliseconds
-     * @return
+     * @return time in format hh:mm:ss
      */
     public static String getTime(long miliseconds) {
         long seconds = miliseconds / 1000;

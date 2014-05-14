@@ -10,7 +10,7 @@ import android.database.sqlite.SQLiteOpenHelper;
  */
 public class DatabaseHelper extends SQLiteOpenHelper {
 
-    public static final int DATABASE_VERSION = 9;
+    public static final int DATABASE_VERSION = 1;
     public static final String DATABASE_NAME = "Sportsman.db";
 
     private static final String CREATE_TABLE_WORKOUTS = "CREATE TABLE " + WorkoutContract.WorkoutEntry.TABLE_NAME
@@ -19,7 +19,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             + WorkoutContract.WorkoutEntry.COLUMN_NAME_DURATION + " INTEGER, "
             + WorkoutContract.WorkoutEntry.COLUMN_NAME_SPORT_ID + " INTEGER, "
             + WorkoutContract.WorkoutEntry.COLUMN_NAME_MOOD_ID + " INTEGER, "
-            + WorkoutContract.WorkoutEntry.COLUMN_NAME_WEATHER_ID + " INTEGER, "
             + WorkoutContract.WorkoutEntry.COLUMN_NAME_DATETIME + " TIMESTAMP)";
 
     private static final String CREATE_TABLE_WAYPOINTS = "CREATE TABLE " + WaypointContract.WaypointEntry.TABLE_NAME

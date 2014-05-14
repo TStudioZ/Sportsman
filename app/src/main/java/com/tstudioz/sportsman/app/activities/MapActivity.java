@@ -1,4 +1,4 @@
-package com.tstudioz.sportsman.app;
+package com.tstudioz.sportsman.app.activities;
 
 import android.graphics.Color;
 import android.os.Bundle;
@@ -12,6 +12,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
+import com.tstudioz.sportsman.app.R;
 import com.tstudioz.sportsman.app.database.WaypointDAO;
 import com.tstudioz.sportsman.app.training.Waypoint;
 
@@ -48,26 +49,27 @@ public class MapActivity extends FragmentActivity {
     }
 
     private void showWaypoints() {
+
+        /* if less than 1 waypoint, don\'t show anything */
+        if (waypoints.size() < 1) return;
+
         PolylineOptions polylineOptions = new PolylineOptions();
         Iterator<Waypoint> iterator = waypoints.iterator();
         Waypoint currentWaypoint;
-        if (waypoints.size() >= 1) {
-            currentWaypoint = iterator.next();
-            polylineOptions.add(currentWaypoint.getLatLng());
-            map.addMarker(new MarkerOptions()
-                    .position(currentWaypoint.getLatLng())
-                    .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED))
-                    .flat(true));
-        }
-        else
-            return;
+        currentWaypoint = iterator.next();
+        polylineOptions.add(currentWaypoint.getLatLng());
 
-        if (waypoints.size() >= 2) {
-            map.addMarker(new MarkerOptions()
-                    .position(waypoints.get(waypoints.size() - 1).getLatLng())
-                    .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN))
-                    .flat(true));
-        }
+        /* start waypoint */
+        map.addMarker(new MarkerOptions()
+                .position(currentWaypoint.getLatLng())
+                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED))
+                .flat(true));
+
+        /* goal waypoint */
+        map.addMarker(new MarkerOptions()
+                .position(waypoints.get(waypoints.size() - 1).getLatLng())
+                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN))
+                .flat(true));
 
         double mostWest = currentWaypoint.getLatLng().longitude,
                 mostNorth = currentWaypoint.getLatLng().latitude,
@@ -87,7 +89,8 @@ public class MapActivity extends FragmentActivity {
                 mostSouth = currentWaypoint.getLatLng().latitude;
         }
 
-        map.addPolyline(polylineOptions);
+        if (polylineOptions.getPoints().size() > 1)
+            map.addPolyline(polylineOptions);
 
         LatLngBounds bounds = new LatLngBounds(
                 new LatLng(mostSouth, mostWest),

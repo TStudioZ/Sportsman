@@ -1,6 +1,7 @@
-package com.tstudioz.sportsman.app;
+package com.tstudioz.sportsman.app.activities;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.InputFilter;
 import android.text.Spanned;
@@ -11,6 +12,8 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.Spinner;
 
+import com.tstudioz.sportsman.app.R;
+import com.tstudioz.sportsman.app.components.TimeInput;
 import com.tstudioz.sportsman.app.database.WorkoutDAO;
 import com.tstudioz.sportsman.app.time.TimeHelper;
 import com.tstudioz.sportsman.app.training.Sport;
@@ -105,7 +108,12 @@ public class WorkoutEditActivity extends Activity {
     }
 
     private void saveWorkout() {
-        long duration = timeInputDuration.getMiliseconds();
+        long duration = timeInputDuration.getMilliseconds();
+
+        if (duration == 0) {
+            new DialogHelper(this, null).showInfoDialog(getString(R.string.duration_null));
+            return;
+        }
 
         /* start time and date */
         int hours = timeInputStart.getHours();
@@ -124,10 +132,16 @@ public class WorkoutEditActivity extends Activity {
             update = false;
         workout = new Workout(timestamp, duration, distance, 3, (Sport) sportsSpinner.getSelectedItem());
 
-        if (update)
+        if (update) {
             workoutDAO.updateAdd(workout, workoutID);
-        else
-            workoutDAO.add(workout);
+            finish();
+        }
+        else {
+            workoutID = workoutDAO.add(workout);
+            Intent intent = new Intent(this, WorkoutDetailActivity.class);
+            intent.putExtra("workout_id", workoutID);
+            finish();
+        }
     }
 
     private class DistanceFilter implements InputFilter {
