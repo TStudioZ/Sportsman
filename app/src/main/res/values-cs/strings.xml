@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="title_section1">Hlavní</string>
+    <string name="diary">Diář</string>
+    <string name="title_section3">Statistiky</string>
+    <string name="action_settings">Nastavení</string>
+    <string name="title_activity_map">Mapa</string>
+    <string name="start_workout">Začít nový trénink</string>
+    <string name="add_workout">Přidat nový trénink</string>
+    <string name="choose_sport">Vybrat sport:</string>
+    <string name="pause_workout">Pauza</string>
+    <string name="resume_workout">Pokračovat</string>
+    <string name="stop_workout">Stop</string>
+    <string name="delete_workout">Smazat</string>
+    <string name="title_activity_workout">Trénink</string>
+    <string name="title_activity_workout_finish">Jakou jste měli náladu?</string>
+    <string name="all">Všechny</string>
+    <string name="are_you_sure">Jste si jisti?</string>
+    <string name="last_workout">Poslední trénink:</string>
+
+    <string name="sport_inline">Inline</string>
+    <string name="sport_bike">Kolo</string>
+    <string name="sport_running">Běh</string>
+    <string name="sport_skiing">Lyžování</string>
+    <string name="sport_ice_skating">Lední brusle</string>
+
+    <string name="title_activity_workout_detail">Detail tréninku</string>
+    <string name="show_map">Ukázat na mapě</string>
+    <string name="edit">Upravit</string>
+    <string name="workout">Trénink</string>
+    <string name="distance_detail">Vzdálenost:</string>
+    <string name="duration_detail">Trvání:</string>
+    <string name="burned_detail">Spáleno:</string>
+    <string name="avg_speed_detail">Průměrná rychlost:</string>
+    <string name="start_time_detail">Začátek:</string>
+    <string name="start_date_detail">Datum:</string>
+    <string name="sport_detail">Sport:</string>
+    <string name="avg_speed_graph">Průměrná rychlost</string>
+    <string name="title_activity_workout_edit">Trénink</string>
+    <string name="save">Uložit</string>
+    <string name="graph">Statistiky - grafy</string>
+    <string name="title_activity_stats">Statistiky</string>
+    <string name="duration_null">Trvání nemůže být 0.</string>
+    <string name="cancel_workout">Opravdu chcete zrušit tento trénink?</string>
+    <string name="no_map_data">Žádná mapová data k dispozici.</string>
+
+    <string name="total_workouts">Celkový počet tréninků:</string>
+    <string name="num_of_workouts">Počet tréninků</string>
+    <string name="total_distance">Celková vzdálenost:</string>
+    <string name="total_calories">Celkem spáleno kCal:</string>
+
+    <string name="last_7_days">Posledních 7 dní</string>
+    <string name="last_30_days">Posledních 30 dní</string>
+
+    <string-array name="graphs">
+        <item>Vzdálenost</item>
+        <item>Čas</item>
+        <item>Kalorie</item>
+        <item>Prům. rychlost</item>
+    </string-array>
+
+    <string-array name="months">
+        <item>Leden</item>
+        <item>Únor</item>
+        <item>Březen</item>
+        <item>Duben</item>
+        <item>Květen</item>
+        <item>Červen</item>
+        <item>Červenec</item>
+        <item>Srpen</item>
+        <item>Září</item>
+        <item>Říjen</item>
+        <item>Listopad</item>
+        <item>Prosinec</item>
+    </string-array>
+
+</resources>

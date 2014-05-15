@@ -27,7 +27,7 @@ public class WorkoutService extends Service implements
     private LocationClient locationClient;
     private LocationRequest locationRequest;
 
-    /* interval fro receiving location updates */
+    /* interval for receiving location updates */
     private static final int UPDATE_INTERVAL = 2000;
 
     public static final String INTENT_DISTANCE_UPDATE = "distance_update";
@@ -158,7 +158,7 @@ public class WorkoutService extends Service implements
                 float distance[] = new float[1];
                 Location.distanceBetween(lastLocation.getLatitude(), lastLocation.getLongitude(),
                         location.getLatitude(), location.getLongitude(), distance); // determine distance between last and new location
-                speed = distance[0] / (lastIntervalMilisecs * 0.001f); // determine speed based on distance and elapsed time
+                speed = distance[0] * 3.6f / (lastIntervalMilisecs * 0.001f); // determine speed based on distance and elapsed time
 
                 workout.addDistance(distance[0]);
                 Intent intent = new Intent(INTENT_DISTANCE_UPDATE);

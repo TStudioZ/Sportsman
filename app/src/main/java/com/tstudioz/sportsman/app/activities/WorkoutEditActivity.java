@@ -10,6 +10,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Spinner;
 
 import com.tstudioz.sportsman.app.R;
@@ -21,9 +22,12 @@ import com.tstudioz.sportsman.app.training.Workout;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.List;
+import java.util.Locale;
 
 
 public class WorkoutEditActivity extends Activity {
@@ -33,6 +37,7 @@ public class WorkoutEditActivity extends Activity {
     private TimeInput timeInputDuration;
     private TimeInput timeInputStart;
     private DatePicker datePicker;
+    private List<ImageView> moodButtons;
     private Button btnSave;
 
     private long workoutID;
@@ -72,8 +77,51 @@ public class WorkoutEditActivity extends Activity {
             }
         });
 
+        View.OnClickListener clickListener = new MoodClickListener();
+        moodButtons = new ArrayList<>(3);
+        moodButtons.add((ImageView) findViewById(R.id.btn_mood_best));
+        moodButtons.add((ImageView) findViewById(R.id.btn_mood_middle));
+        moodButtons.add((ImageView) findViewById(R.id.btn_mood_worse));
+        for (int i = 0; i < moodButtons.size(); i++) {
+            moodButtons.get(i).setOnClickListener(clickListener);
+        }
+        moodID = 3;
+        selectMoodButton(0);
+
         if (workout != null)
             fillViews(workout);
+    }
+
+    private int moodID;
+    private void selectMoodButton(int index) {
+        for (int i = 0; i < moodButtons.size(); i++) {
+            if (i != index)
+                moodButtons.get(i).setBackground(null);
+            else
+                moodButtons.get(i).setBackground(getResources().getDrawable(R.drawable.mood_selected));
+        }
+    }
+    private class MoodClickListener implements View.OnClickListener {
+        @Override
+        public void onClick(View view) {
+            switch (view.getId()) {
+                case R.id.btn_mood_best: {
+                    moodID = 3;
+                    selectMoodButton(0);
+                    break;
+                }
+                case R.id.btn_mood_middle: {
+                    moodID = 2;
+                    selectMoodButton(1);
+                    break;
+                }
+                case R.id.btn_mood_worse: {
+                    moodID = 1;
+                    selectMoodButton(2);
+                    break;
+                }
+            }
+        }
     }
 
     /**
@@ -89,8 +137,15 @@ public class WorkoutEditActivity extends Activity {
             }
         }
 
+        if (workout.getMoodID() == 3)
+            selectMoodButton(0);
+        else if (workout.getMoodID() == 2)
+            selectMoodButton(1);
+        else
+            selectMoodButton(2);
+
         timeInputDuration.setTime(workout.getDuration());
-        editTextDistance.setText(String.valueOf(workout.getDistance() * 0.001f));
+        editTextDistance.setText(String.format(Locale.ENGLISH, "%.3f", workout.getDistance() * 0.001f));
 
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         try {
@@ -107,6 +162,9 @@ public class WorkoutEditActivity extends Activity {
         }
     }
 
+    /**
+     * Update or add workout to database.
+     */
     private void saveWorkout() {
         long duration = timeInputDuration.getMilliseconds();
 
@@ -125,12 +183,17 @@ public class WorkoutEditActivity extends Activity {
 
         String timestamp = TimeHelper.createTimestamp(year, month, day, hours, minutes, seconds);
 
-        float distance = Float.parseFloat(editTextDistance.getText().toString()) * 1000.0f;
+        float distance;
+        try {
+            distance = Float.parseFloat(editTextDistance.getText().toString()) * 1000.0f;
+        } catch (NumberFormatException e) {
+            distance = 0.0f;
+        }
 
         boolean update = true;
         if (workout == null)
             update = false;
-        workout = new Workout(timestamp, duration, distance, 3, (Sport) sportsSpinner.getSelectedItem());
+        workout = new Workout(timestamp, duration, distance, moodID, (Sport) sportsSpinner.getSelectedItem());
 
         if (update) {
             workoutDAO.updateAdd(workout, workoutID);
@@ -144,11 +207,15 @@ public class WorkoutEditActivity extends Activity {
         }
     }
 
+    /**
+     * Filter makes sure that distance is in range.
+     */
     private class DistanceFilter implements InputFilter {
         @Override
-        public CharSequence filter(CharSequence charSequence, int start, int end, Spanned spanned, int dstart, int dend) {
+        public CharSequence filter(CharSequence source, int start, int end, Spanned dest, int dstart, int dend) {
             try {
-                float distance = Float.parseFloat(spanned.toString() + charSequence.toString());
+                float distance = Float.parseFloat(dest.toString().substring(0, dstart)
+                        + source.toString().substring(start, end) + dest.toString().substring(dend));
                 if (distance >= 0.0f && distance <= 999.9f)
                     return null;
             } catch (NumberFormatException e) {

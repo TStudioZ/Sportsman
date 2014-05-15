@@ -21,7 +21,6 @@ import com.tstudioz.sportsman.app.R;
 import com.tstudioz.sportsman.app.SportsmanApp;
 import com.tstudioz.sportsman.app.adapters.WorkoutCursorAdapter;
 import com.tstudioz.sportsman.app.services.WorkoutService;
-import com.tstudioz.sportsman.app.time.TimeHelper;
 import com.tstudioz.sportsman.app.training.Sport;
 
 
@@ -40,6 +39,8 @@ public class WorkoutActivity extends Activity implements
     private TextView textViewDuration;
     private TextView textViewSpeed;
     private TextView textViewSport;
+    private int sportID;
+    private IntentFilter intentFilter;
 
     /* mode of the workout - not started, started, paused */
     private int mode;
@@ -67,17 +68,16 @@ public class WorkoutActivity extends Activity implements
         else if (mode == STOP_MODE)
             showStop();
 
-        int sportID = getIntent().getExtras().getInt("sport_id");
+        sportID = getIntent().getExtras().getInt("sport_id");
         ((SportsmanApp) getApplicationContext()).setWorkoutActivity(this);
         serviceIntent = new Intent(this, WorkoutService.class);
         serviceIntent.putExtra("sport_id", sportID);
         startService(serviceIntent);
 
-        IntentFilter intentFilter = new IntentFilter();
+        intentFilter = new IntentFilter();
         intentFilter.addAction("distance_update");
         intentFilter.addAction("time_update");
         workoutBroadcastReceiver = new WorkoutBroadcastReceiver();
-        LocalBroadcastManager.getInstance(this).registerReceiver(workoutBroadcastReceiver, intentFilter);
 
         btnStartWorkout.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -120,10 +120,24 @@ public class WorkoutActivity extends Activity implements
         textViewSpeed = (TextView) findViewById(R.id.speed);
         textViewSport = (TextView) findViewById(R.id.text_view_sport);
 
-        textViewDistance.setText( String.format("%.2f", 0.0f) + WorkoutCursorAdapter.DISTANCE_UNITS );
-        textViewDuration.setText( TimeHelper.getTime(0) );
-        textViewSpeed.setText( String.format("%.2f", 0.0f) + WorkoutCursorAdapter.SPEED_UNITS );
-        textViewSport.setText( Sport.getSport(sportID).getNameID() );
+        textViewSport.setText(Sport.getSport(sportID).getNameID());
+
+        /* reset views if we haven'\t started yet */
+        if (mode == START_MODE) {
+            updateHUD();
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        LocalBroadcastManager.getInstance(this).registerReceiver(workoutBroadcastReceiver, intentFilter);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(workoutBroadcastReceiver);
     }
 
     private final int CANCEL_WORKOUT_COMMAND = 1;
@@ -165,39 +179,58 @@ public class WorkoutActivity extends Activity implements
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putInt("mode", mode);
+        outState.putFloat("distance", distance);
+        outState.getFloat("speed", speed);
+        outState.putString("duration", duration);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        if (savedInstanceState != null) {
+            distance = savedInstanceState.getFloat("distance");
+            speed = savedInstanceState.getFloat("speed");
+            duration = savedInstanceState.getString("duration");
+            updateHUD();
+        }
+    }
+
+    private void updateHUD() {
+        updateHUDDistance();
+        updateHUDTime();
     }
 
     /**
      * Updates HUD with distance and speed.
-     * @param distance taken distance
-     * @param speed current speed
      */
-    private void updateHUD(float distance, float speed) {
+    private void updateHUDDistance() {
         textViewDistance.setText(String.format("%.2f", distance * 0.001f) + WorkoutCursorAdapter.DISTANCE_UNITS);
         textViewSpeed.setText(String.format("%.2f", speed) + WorkoutCursorAdapter.SPEED_UNITS);
     }
 
     /**
      * Updates time of HUD based on parameter.
-     * @param time String version of time
      */
-    private void updateHUD(String time) {
-        textViewDuration.setText(time);
+    private void updateHUDTime() {
+        textViewDuration.setText(duration);
     }
 
     private WorkoutBroadcastReceiver workoutBroadcastReceiver;
 
+    private float distance = 0.00f;
+    private float speed = 0.00f;
+    private String duration = "00:00:00";
     private class WorkoutBroadcastReceiver extends BroadcastReceiver {
         @Override
         public void onReceive(Context context, Intent intent) {
             if (intent.getAction().equals(WorkoutService.INTENT_DISTANCE_UPDATE)) {
-                float distance = intent.getFloatExtra("distance", 0);
-                float speed = intent.getFloatExtra("speed", 0);
-                updateHUD(distance, speed);
+                distance = intent.getFloatExtra("distance", 0);
+                speed = intent.getFloatExtra("speed", 0);
+                updateHUDDistance();
             }
             else if (intent.getAction().equals(WorkoutService.INTENT_TIME_UPDATE)) {
-                String time = intent.getStringExtra("time");
-                updateHUD(time);
+                duration = intent.getStringExtra("time");
+                updateHUDTime();
             }
         }
     }

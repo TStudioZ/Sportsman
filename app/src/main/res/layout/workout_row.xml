@@ -1,50 +1,58 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="10dp">
 
-    <TextView android:id="@+id/datetime"
-        android:text="10. 5. 2014"
-        android:textSize="18dp"
-        android:textColor="@android:color/holo_orange_dark"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
-
-    <TextView android:id="@+id/sport_name"
-        android:text="@string/sport_inline"
-        android:textSize="20dp"
-        android:paddingTop="2dp"
-        android:paddingBottom="2dp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
-
-    <LinearLayout android:orientation="horizontal"
-        android:paddingTop="2dp"
+    <LinearLayout android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
-        <TextView android:id="@+id/distance"
-            android:text="45.82 km"
-            android:textSize="20dp"
-            android:textColor="@android:color/holo_green_light"
-            android:layout_width="wrap_content"
+        <TextView android:id="@+id/datetime"
+            android:text="10. 5. 2014"
+            android:textSize="18dp"
+            android:textColor="@android:color/holo_orange_dark"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content" />
-        <TextView android:id="@+id/duration"
-            android:text="03:02:34"
-            android:textSize="20dp"
-            android:paddingLeft="20dp"
-            android:textColor="@android:color/holo_blue_light"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
-        <TextView android:id="@+id/calories"
-            android:text="348 kcal"
-            android:textSize="20dp"
-            android:paddingLeft="20dp"
-            android:textColor="@android:color/holo_red_light"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
-    </LinearLayout>
 
-</LinearLayout>
+        <TextView android:id="@+id/sport_name"
+            android:text="@string/sport_inline"
+            android:textSize="20dp"
+            android:paddingTop="2dp"
+            android:paddingBottom="2dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <LinearLayout android:orientation="horizontal"
+            android:paddingTop="2dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <TextView android:id="@+id/distance"
+                android:text="45.82 km"
+                android:textSize="20dp"
+                android:textColor="@android:color/holo_green_light"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+            <TextView android:id="@+id/duration"
+                android:text="03:02:34"
+                android:textSize="20dp"
+                android:paddingLeft="20dp"
+                android:textColor="@android:color/holo_blue_light"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+            <TextView android:id="@+id/calories"
+                android:text="348 kcal"
+                android:textSize="20dp"
+                android:paddingLeft="20dp"
+                android:textColor="@android:color/holo_red_light"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
+    </LinearLayout>
+    <ImageView android:id="@+id/mood"
+        android:layout_alignParentRight="true"
+        android:src="@drawable/best"
+        android:layout_width="60dp"
+        android:layout_height="60dp" />
+
+</RelativeLayout>

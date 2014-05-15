@@ -24,16 +24,23 @@ public class TimeHelper {
     }
 
     /**
-     * Converts given datetime to locale datetime.
+     * Converts given datetime to locale date.
      * @param context context
      * @param datetime datetime in text format
      * @return
      * @throws ParseException exception when parsing datetime
      */
-    public static String convertToLocale(Context context, String datetime) throws ParseException {
+    public static String convertDateToLocale(Context context, String datetime) throws ParseException {
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         Date date = simpleDateFormat.parse(datetime);
         DateFormat dateFormat = android.text.format.DateFormat.getDateFormat(context);
+        return dateFormat.format(date);
+    }
+
+    public static String convertTimeToLocale(Context context, String datetime) throws ParseException {
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Date date = simpleDateFormat.parse(datetime);
+        DateFormat dateFormat = android.text.format.DateFormat.getTimeFormat(context);
         return dateFormat.format(date);
     }
 
@@ -52,12 +59,18 @@ public class TimeHelper {
      * @return instance of Calendar
      * @throws ParseException
      */
-    public static Calendar getDate(String datetime) throws ParseException {
+    public static Calendar getDateLocale(String datetime) throws ParseException {
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         Date date = simpleDateFormat.parse(datetime);
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(date);
         return calendar;
+    }
+
+    public static String getDateLocale(Context context, Calendar date) {
+        DateFormat dateFormat = android.text.format.DateFormat.getDateFormat(context);
+        return dateFormat.format(new GregorianCalendar(date.get(Calendar.YEAR),
+                date.get(Calendar.MONTH), date.get(Calendar.DAY_OF_MONTH)).getTime());
     }
 
     /**

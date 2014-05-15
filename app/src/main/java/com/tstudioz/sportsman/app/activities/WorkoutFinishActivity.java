@@ -5,12 +5,11 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Button;
+import android.widget.ImageButton;
 
 import com.tstudioz.sportsman.app.R;
 import com.tstudioz.sportsman.app.SportsmanApp;
 import com.tstudioz.sportsman.app.database.WorkoutDAO;
-import com.tstudioz.sportsman.app.training.Workout;
 import com.tstudioz.sportsman.app.training.WorkoutWithWaypoints;
 
 import java.util.ArrayList;
@@ -19,8 +18,8 @@ import java.util.List;
 
 public class WorkoutFinishActivity extends Activity {
 
-    private Workout workout;
-    private List<Button> moodButtons;
+    private WorkoutWithWaypoints workout;
+    private List<ImageButton> moodButtons;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,9 +28,9 @@ public class WorkoutFinishActivity extends Activity {
 
         View.OnClickListener clickListener = new MoodClickListener();
         moodButtons = new ArrayList<>(3);
-        moodButtons.add((Button) findViewById(R.id.btn_mood_best));
-        moodButtons.add((Button) findViewById(R.id.btn_mood_middle));
-        moodButtons.add((Button) findViewById(R.id.btn_mood_worse));
+        moodButtons.add((ImageButton) findViewById(R.id.btn_mood_best));
+        moodButtons.add((ImageButton) findViewById(R.id.btn_mood_middle));
+        moodButtons.add((ImageButton) findViewById(R.id.btn_mood_worse));
         for (int i = 0; i < moodButtons.size(); i++) {
             moodButtons.get(i).setOnClickListener(clickListener);
         }
@@ -84,7 +83,7 @@ public class WorkoutFinishActivity extends Activity {
         workout = ((SportsmanApp) getApplicationContext()).getActiveWorkout();
         workout.setMood(moodID);
         WorkoutDAO workoutDAO = new WorkoutDAO(getApplicationContext());
-        return workoutDAO.add((WorkoutWithWaypoints) workout);
+        return workoutDAO.add(workout);
     }
 
 }

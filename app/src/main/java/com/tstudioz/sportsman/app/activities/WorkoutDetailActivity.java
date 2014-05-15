@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -16,6 +17,7 @@ import com.tstudioz.sportsman.app.R;
 import com.tstudioz.sportsman.app.adapters.WorkoutCursorAdapter;
 import com.tstudioz.sportsman.app.database.WorkoutDAO;
 import com.tstudioz.sportsman.app.time.TimeHelper;
+import com.tstudioz.sportsman.app.training.Mood;
 import com.tstudioz.sportsman.app.training.Waypoint;
 import com.tstudioz.sportsman.app.training.WorkoutWithWaypoints;
 
@@ -29,13 +31,15 @@ public class WorkoutDetailActivity extends Activity implements DialogHelper.Comm
     private long workoutID;
     private WorkoutWithWaypoints workout;
     private WorkoutDAO workoutDAO;
-    private TextView datetimeView;
+    private TextView dateView;
+    private TextView timeView;
     private TextView distanceView;
     private TextView durationView;
     private TextView sportNameView;
     private TextView caloriesView;
     private TextView avgSpeedView;
     private LinearLayout graphLayout;
+    private ImageView moodView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,13 +49,15 @@ public class WorkoutDetailActivity extends Activity implements DialogHelper.Comm
         workoutID = getIntent().getExtras().getLong("workout_id");
         workoutDAO = new WorkoutDAO(this);
 
-        datetimeView = (TextView) findViewById(R.id.datetime);
+        dateView = (TextView) findViewById(R.id.date);
+        timeView = (TextView) findViewById(R.id.time);
         distanceView = (TextView) findViewById(R.id.distance);
         durationView = (TextView) findViewById(R.id.duration);
         sportNameView = (TextView) findViewById(R.id.sport_name);
         caloriesView = (TextView) findViewById(R.id.calories);
         avgSpeedView = (TextView) findViewById(R.id.avg_speed);
         graphLayout = (LinearLayout) findViewById(R.id.graph_layout);
+        moodView = (ImageView) findViewById(R.id.mood);
     }
 
     @Override
@@ -66,13 +72,15 @@ public class WorkoutDetailActivity extends Activity implements DialogHelper.Comm
         distanceView.setText(String.format("%.2f", workout.getDistance() * 0.001f) + WorkoutCursorAdapter.DISTANCE_UNITS);
         durationView.setText( TimeHelper.getTime(workout.getDuration()) );
         try {
-            datetimeView.setText( TimeHelper.convertToLocale(this, workout.getDatetime()) );
+            dateView.setText(TimeHelper.convertDateToLocale(this, workout.getDatetime()));
+            timeView.setText(TimeHelper.convertTimeToLocale(this, workout.getDatetime()));
         } catch (ParseException e) {
             e.printStackTrace();
         }
         sportNameView.setText(workout.getSport().getNameID());
         caloriesView.setText( String.valueOf(workout.getCalories()) + WorkoutCursorAdapter.CALORIES_UNITS);
-        avgSpeedView.setText( String.format("%.2f", workout.getAvgSpeed() * 3.6f) + WorkoutCursorAdapter.SPEED_UNITS);
+        avgSpeedView.setText( String.format("%.2f", workout.getAvgSpeed()) + WorkoutCursorAdapter.SPEED_UNITS);
+        moodView.setImageResource(Mood.getDrawableID(workout.getMoodID()));
         drawGraph();
     }
 
@@ -85,7 +93,7 @@ public class WorkoutDetailActivity extends Activity implements DialogHelper.Comm
         Waypoint current;
         for (int i = 1; iter.hasNext(); i++) {
             current = iter.next();
-            graphViewData[i - 1] = new GraphViewData(i, current.getSpeed());
+            graphViewData[i - 1] = new GraphViewData(current.getDistance() * 0.001f, current.getSpeed());
         }
         GraphViewSeries series = new GraphViewSeries(graphViewData);
         GraphView graphView = new LineGraphView(this, getString(R.string.avg_speed_graph));

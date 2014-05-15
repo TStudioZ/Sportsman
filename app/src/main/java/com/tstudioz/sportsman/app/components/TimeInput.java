@@ -78,31 +78,31 @@ public class TimeInput extends LinearLayout {
     }
 
     public int getHours() {
-        int hours = -1;
+        int hours;
         try {
             hours = Integer.parseInt(editTextHours.getText().toString());
         } catch (NumberFormatException e) {
-            e.printStackTrace();
+            return 0;
         }
         return hours;
     }
 
     public int getMinutes() {
-        int hours = -1;
+        int hours;
         try {
             hours = Integer.parseInt(editTextMinutes.getText().toString());
         } catch (NumberFormatException e) {
-            e.printStackTrace();
+            return 0;
         }
         return hours;
     }
 
     public int getSeconds() {
-        int hours = -1;
+        int hours;
         try {
             hours = Integer.parseInt(editTextSeconds.getText().toString());
         } catch (NumberFormatException e) {
-            e.printStackTrace();
+            return 0;
         }
         return hours;
     }

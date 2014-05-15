@@ -1,11 +1,9 @@
 package com.tstudioz.sportsman.app.training;
 
 import android.content.Context;
-import android.content.res.Resources;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -54,15 +52,6 @@ public class Sport {
 
     public static void addSport(Integer key, Sport sport) {
         sports.put(key, sport);
-    }
-
-    public static List<String> getSportsName(Resources resources) {
-        List<String> names = new ArrayList<>(sports.size());
-        Iterator<Sport> iterator = sports.values().iterator();
-        while (iterator.hasNext()) {
-            names.add( resources.getString(iterator.next().nameID) );
-        }
-        return names;
     }
 
     public static List<Sport> getSports() {

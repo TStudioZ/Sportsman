@@ -73,7 +73,7 @@ public class WorkoutDAO extends AbstractDAO {
         contentValues.put(WorkoutContract.WorkoutEntry.COLUMN_NAME_DISTANCE, workout.getDistance());
         contentValues.put(WorkoutContract.WorkoutEntry.COLUMN_NAME_DURATION, workout.getDuration());
         contentValues.put(WorkoutContract.WorkoutEntry.COLUMN_NAME_SPORT_ID, workout.getSport().getId());
-        contentValues.put(WorkoutContract.WorkoutEntry.COLUMN_NAME_MOOD_ID, workout.getMood());
+        contentValues.put(WorkoutContract.WorkoutEntry.COLUMN_NAME_MOOD_ID, workout.getMoodID());
         contentValues.put(WorkoutContract.WorkoutEntry.COLUMN_NAME_DATETIME, workout.getDatetime());
         return contentValues;
     }
@@ -122,28 +122,53 @@ public class WorkoutDAO extends AbstractDAO {
         return db.delete(WorkoutContract.WorkoutEntry.TABLE_NAME, SELECTION_WORKOUT_ID, selectionArgs);
     }
 
-    private static final String SELECTION_WORKOUTS_LAST_WEEK = " BETWEEN datetime('00:00', '-6 days') AND datetime('now', 'localtime')";
-    public Cursor getLastWeek() {
-        return db.rawQuery(SELECT_DATETIME + SELECTION_WORKOUTS_LAST_WEEK, null);
-    }
-
-    private static final String SELECTION_WORKOUTS_THIS_MONTH = " BETWEEN datetime('00:00', 'start of month') AND datetime('now', 'localtime')";
     private static final String ORDER_BY_DATETIME_DESC = " ORDER BY " + WorkoutContract.WorkoutEntry.COLUMN_NAME_DATETIME + " DESC";
     private static final String ORDER_BY_DATETIME_ASC = " ORDER BY " + WorkoutContract.WorkoutEntry.COLUMN_NAME_DATETIME + " ASC";
-    public Cursor getThisMonth() {
-        return db.rawQuery(SELECT_DATETIME + SELECTION_WORKOUTS_THIS_MONTH + ORDER_BY_DATETIME_DESC, null);
-    }
 
     private static final String SELECT_DATETIME = "SELECT * FROM " + WorkoutContract.WorkoutEntry.TABLE_NAME + " WHERE " + WorkoutContract.WorkoutEntry.COLUMN_NAME_DATETIME;
+
+    private static final String SELECT_SUM_DISTANCE = "SELECT SUM("
+            + WorkoutContract.WorkoutEntry.COLUMN_NAME_DISTANCE + ") FROM "
+            + WorkoutContract.WorkoutEntry.TABLE_NAME;
+    public float getTotalDistance() {
+        Cursor cursor = db.rawQuery(SELECT_SUM_DISTANCE, null);
+        cursor.moveToFirst();
+        return cursor.getFloat(0);
+    }
+
+    /**
+     * Finds last workout by datetime.
+     * @return last workout in database
+     */
+    public Workout getLastWorkout() {
+        Workout workout = null;
+        Cursor cursor = db.rawQuery(SELECT_ALL + ORDER_BY_DATETIME_DESC + " LIMIT 1", null);
+        if (cursor.getCount() > 0) {
+            cursor.moveToFirst();
+            workout = getWorkoutFromCursor(cursor);
+        }
+        return workout;
+    }
+
+    /**
+     * Sums up total distance of workouts with given sport id.
+     * @return total distance of given sport
+     */
+    public float getTotalDistance(int sportID) {
+        Cursor cursor = db.rawQuery(SELECT_SUM_DISTANCE
+                + WHERE_SPORT_ID, new String[]{String.valueOf(sportID)});
+        cursor.moveToFirst();
+        return cursor.getFloat(0);
+    }
 
     public int getNumOfWorkouts() {
         return getAll().getCount();
     }
 
+    private static final String WHERE_SPORT_ID =  " WHERE " + WorkoutContract.WorkoutEntry.COLUMN_NAME_SPORT_ID + " = ?";
+    private static final String SELECT_ALL = "SELECT * FROM " + WorkoutContract.WorkoutEntry.TABLE_NAME;
     public int getNumOfWorkouts(int sportID) {
-        Cursor cursor = db.rawQuery(SELECT_DATETIME + SELECTION_WORKOUTS_THIS_MONTH
-                + " AND " + WorkoutContract.WorkoutEntry.COLUMN_NAME_SPORT_ID + " = ?",
-                new String[] {String.valueOf(sportID)});
+        Cursor cursor = db.rawQuery(SELECT_ALL + WHERE_SPORT_ID, new String[] {String.valueOf(sportID)});
         return cursor.getCount();
     }
 

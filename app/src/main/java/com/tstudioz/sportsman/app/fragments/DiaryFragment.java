@@ -1,9 +1,11 @@
 package com.tstudioz.sportsman.app.fragments;
 
+import android.app.Activity;
 import android.app.Fragment;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.MenuInflater;
@@ -17,6 +19,7 @@ import android.widget.Spinner;
 
 import com.tstudioz.sportsman.app.activities.DialogHelper;
 import com.tstudioz.sportsman.app.R;
+import com.tstudioz.sportsman.app.activities.OnRefreshListener;
 import com.tstudioz.sportsman.app.activities.WorkoutDetailActivity;
 import com.tstudioz.sportsman.app.database.WorkoutContract;
 import com.tstudioz.sportsman.app.database.WorkoutDAO;
@@ -139,6 +142,20 @@ public class DiaryFragment extends Fragment implements
             workoutDAO.delete(currentCursor.getLong(currentCursor
                     .getColumnIndex(WorkoutContract.WorkoutEntry._ID)));
             refreshWorkouts();
+            refreshListener.onRefresh(this.getClass());
+        }
+    }
+
+    private OnRefreshListener refreshListener;
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+
+        try {
+            refreshListener = (OnRefreshListener) activity;
+        } catch (ClassCastException e) {
+            Log.d(StatsFragment.class.toString(),
+                    activity.getClass().toString() + " must implement " + OnRefreshListener.class.toString() + ".");
         }
     }
 
@@ -148,6 +165,7 @@ public class DiaryFragment extends Fragment implements
     private int monthsLastPosition;
     private int yearsLastPosition;
     private SpinnerSelectedListener spinnerSelectedListener;
+
     private class SpinnerSelectedListener implements AdapterView.OnItemSelectedListener {
         @Override
         public void onItemSelected(AdapterView<?> adapterView, View view, int pos, long l) {

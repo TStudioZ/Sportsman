@@ -17,7 +17,7 @@ public class Workout {
         this.mood = mood;
         this.sport = sport;
         try {
-            this.date = TimeHelper.getDate(datetime);
+            this.date = TimeHelper.getDateLocale(datetime);
         } catch (ParseException e) {
             e.printStackTrace();
         }
@@ -27,7 +27,7 @@ public class Workout {
         return distance;
     }
 
-    public int getMood() {
+    public int getMoodID() {
         return mood;
     }
 
@@ -71,8 +71,12 @@ public class Workout {
     protected int mood;
     protected Sport sport;
 
+    /**
+     * Returns average speed in km/h.
+     * @return average speed in km/h
+     */
     public float getAvgSpeed() {
-        return distance / (duration * 0.001f);
+        return distance * 3.6f / (duration * 0.001f);
     }
 
 }

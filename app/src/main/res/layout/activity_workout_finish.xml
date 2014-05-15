@@ -10,17 +10,20 @@
     android:paddingBottom="@dimen/activity_vertical_margin"
     tools:context="com.tstudioz.sportsman.app.activities.WorkoutFinishActivity">
 
-    <Button android:id="@+id/btn_mood_best"
+    <ImageButton android:id="@+id/btn_mood_best"
+        android:src="@drawable/best"
         android:text=":)"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 
-    <Button android:id="@+id/btn_mood_middle"
+    <ImageButton android:id="@+id/btn_mood_middle"
+        android:src="@drawable/middle"
         android:text=":|"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 
-    <Button android:id="@+id/btn_mood_worse"
+    <ImageButton android:id="@+id/btn_mood_worse"
+        android:src="@drawable/worse"
         android:text=":("
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />

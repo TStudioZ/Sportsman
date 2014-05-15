@@ -150,7 +150,7 @@ public class StatsActivity extends Activity {
         return getGraph(new GraphDataProvider() {
             @Override
             public float getValue(Workout workout) {
-                return workout.getDuration();
+                return workout.getDuration() * 0.001f;
             }
 
             @Override
@@ -209,6 +209,7 @@ public class StatsActivity extends Activity {
         }
         Calendar date = Calendar.getInstance();
         date.add(Calendar.DATE, -numOfDays + 1);
+        Calendar startDate = (Calendar) date.clone();
         GraphViewData[] graphViewData = new GraphViewData[numOfDays];
         Iterator<Workout> iter = workouts.iterator();
         Workout currentWorkout = iter.next();
@@ -234,6 +235,10 @@ public class StatsActivity extends Activity {
         GraphViewSeries.GraphViewSeriesStyle seriesStyle
                 = new GraphViewSeries.GraphViewSeriesStyle(provider.getColor(), 3);
         graphView.setManualYAxisBounds(max, 0.0f);
+
+        date.add(Calendar.DATE, -1);
+        graphView.setHorizontalLabels(new String[]{ TimeHelper.getDateLocale(this, startDate),
+                TimeHelper.getDateLocale(this, date) });
         graphView.getGraphViewStyle().setNumHorizontalLabels(0);
         GraphViewSeries series = new GraphViewSeries("", seriesStyle, graphViewData);
         graphView.addSeries(series);

@@ -6,7 +6,7 @@ import android.content.res.AssetManager;
 import com.tstudioz.sportsman.app.activities.WorkoutActivity;
 import com.tstudioz.sportsman.app.services.WorkoutService;
 import com.tstudioz.sportsman.app.training.Sport;
-import com.tstudioz.sportsman.app.training.Workout;
+import com.tstudioz.sportsman.app.training.WorkoutWithWaypoints;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -15,6 +15,10 @@ import java.io.InputStreamReader;
 
 /**
  * Created by Tomáš Zahálka on 11. 5. 2014.
+ */
+
+/**
+ * An application singleton, sharing variables across activities.
  */
 public class SportsmanApp extends Application {
     private WorkoutService workoutService;
@@ -37,15 +41,15 @@ public class SportsmanApp extends Application {
 
     private WorkoutActivity workoutActivity;
 
-    public Workout getActiveWorkout() {
+    public WorkoutWithWaypoints getActiveWorkout() {
         return activeWorkout;
     }
 
-    public void setActiveWorkout(Workout activeWorkout) {
+    public void setActiveWorkout(WorkoutWithWaypoints activeWorkout) {
         this.activeWorkout = activeWorkout;
     }
 
-    private Workout activeWorkout;
+    private WorkoutWithWaypoints activeWorkout;
 
     @Override
     public void onCreate() {

@@ -1,4 +1,4 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:custom="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
@@ -8,74 +8,120 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     android:paddingBottom="@dimen/activity_vertical_margin"
+    android:descendantFocusability="beforeDescendants"
+    android:focusableInTouchMode="true"
     tools:context="com.tstudioz.sportsman.app.activities.WorkoutEditActivity">
 
-    <RelativeLayout
+    <LinearLayout android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
-        <TextView android:text="@string/distance_detail"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
-        <Spinner android:id="@+id/edit_sport"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
-    </RelativeLayout>
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <TextView android:text="@string/sport_detail"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+            <Spinner android:id="@+id/edit_sport"
+                android:layout_alignParentRight="true"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+        </RelativeLayout>
 
-    <RelativeLayout
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <TextView android:text="@string/duration_detail"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+            <com.tstudioz.sportsman.app.components.TimeInput
+                android:layout_alignParentRight="true"
+                android:id="@+id/edit_duration"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <TextView android:text="@string/distance_detail"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+            <LinearLayout android:layout_alignParentRight="true"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+                <EditText android:id="@+id/edit_distance"
+                    android:inputType="numberDecimal"
+                    android:text="0"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+                <TextView android:text="km"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+            </LinearLayout>
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <TextView android:text="@string/start_time_detail"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+            <com.tstudioz.sportsman.app.components.TimeInput
+                android:layout_alignParentRight="true"
+                android:id="@+id/edit_start_time"
+                custom:maxHours="23"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <TextView android:text="@string/start_date_detail"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+            <DatePicker android:id="@+id/edit_start_date"
+                android:layout_alignParentRight="true"
+                android:calendarViewShown="false"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"></DatePicker>
+        </RelativeLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <ImageView android:id="@+id/btn_mood_best"
+                android:src="@drawable/best"
+                android:layout_margin="10dp"
+                android:text=":)"
+                android:layout_width="80dp"
+                android:layout_height="wrap_content" />
+
+            <ImageView android:id="@+id/btn_mood_middle"
+                android:src="@drawable/middle"
+                android:layout_margin="10dp"
+                android:text=":|"
+                android:layout_width="80dp"
+                android:layout_height="wrap_content" />
+
+            <ImageView android:id="@+id/btn_mood_worse"
+                android:src="@drawable/worse"
+                android:layout_margin="10dp"
+                android:text=":("
+                android:layout_width="80dp"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <LinearLayout android:layout_alignParentBottom="true"
+        android:layout_marginBottom="30dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
-        <TextView android:text="@string/distance_detail"
-            android:layout_width="wrap_content"
+        <Button android:id="@+id/edit_btn_save"
+            android:layout_centerHorizontal="true"
+            android:text="@string/save"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content" />
-        <EditText android:id="@+id/edit_distance"
-            android:layout_alignParentRight="true"
-            android:inputType="numberDecimal"
-            android:text="0"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
-    </RelativeLayout>
+    </LinearLayout>
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-        <TextView android:text="@string/duration_detail"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
-        <com.tstudioz.sportsman.app.components.TimeInput
-            android:id="@+id/edit_duration"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
-    </RelativeLayout>
-
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-        <TextView android:text="@string/start_time_detail"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
-        <com.tstudioz.sportsman.app.components.TimeInput
-            android:id="@+id/edit_start_time"
-            custom:maxHours="23"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
-    </RelativeLayout>
-
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-        <TextView android:text="@string/start_date_detail"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
-        <DatePicker android:id="@+id/edit_start_date"
-            android:calendarViewShown="false"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"></DatePicker>
-    </RelativeLayout>
-
-    <Button android:id="@+id/edit_btn_save"
-        android:layout_centerHorizontal="true"
-        android:text="@string/save"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
-
-</LinearLayout>
+</RelativeLayout>

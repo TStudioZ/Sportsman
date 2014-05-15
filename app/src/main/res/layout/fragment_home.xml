@@ -5,7 +5,67 @@
     android:layout_height="match_parent"
     android:layout_marginBottom="100dp">
 
+    <LinearLayout android:id="@+id/last_workout_linear_layout"
+        android:padding="20dp"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <TextView android:text="@string/last_workout"
+            android:textSize="26dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+        <TableLayout android:id="@+id/last_workout_layout"
+            android:layout_marginLeft="30dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <TableRow
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp" >
+                <TextView android:id="@+id/sport_name"
+                    android:text="@string/sport_inline"
+                    android:textSize="23dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+                <TextView android:id="@+id/date"
+                    android:text="10. 5. 2014"
+                    android:textSize="23dp"
+                    android:layout_marginLeft="20dp"
+                    android:textColor="@android:color/holo_orange_dark"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+            </TableRow>
+            <TableRow>
+                <TextView android:text="@string/distance_detail"
+                    android:textSize="17dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+                <TextView android:id="@+id/distance"
+                    android:text="45.82 km"
+                    android:textSize="23dp"
+                    android:paddingLeft="20dp"
+                    android:textColor="@android:color/holo_green_light"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+            </TableRow>
+            <TableRow>
+                <TextView android:text="@string/duration_detail"
+                    android:textSize="17dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+                <TextView android:id="@+id/duration"
+                    android:text="03:02:34"
+                    android:textSize="23dp"
+                    android:paddingLeft="20dp"
+                    android:textColor="@android:color/holo_blue_light"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+            </TableRow>
+        </TableLayout>
+    </LinearLayout>
+
     <LinearLayout android:orientation="vertical"
+        android:layout_below="@+id/last_workout_linear_layout"
+        android:id="@+id/sport_chooser"
         android:padding="20dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
@@ -14,7 +74,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
         <Spinner android:id="@+id/sports_spinner"
-            android:layout_marginTop="30dp"
+            android:layout_marginTop="20dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
     </LinearLayout>
